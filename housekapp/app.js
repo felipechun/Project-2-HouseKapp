@@ -12,6 +12,7 @@ const nodemailer = require('nodemailer');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+const MongoStore = require('connect-mongo')(session);
 const User = require('./models/User');
 const Task = require('./models/Task');
 
@@ -86,14 +87,13 @@ app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 
 // default value for title local
 app.locals.title = 'Express - Generated with IronGenerator';
 
-const auth = require('./routes/auth');
-app.use('/auth', auth);
+const authRoutes = require('./routes/auth');
+app.use('/', authRoutes);
 
 const index = require('./routes/index');
 app.use('/', index);
