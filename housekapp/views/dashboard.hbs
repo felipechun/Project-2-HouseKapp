@@ -1,0 +1,87 @@
+<div class="container mb-4 mt-5"> <!-- house name and members -->
+  <div class="row h-100">
+    <div class="col-lg-6 col-md-9 col-sm-12 my-auto">
+      <h1 class="text-wrap black-text"><b>My Home</b></h1>
+      <p class="text-wrap black-text member-name">
+        Roommates: username 1, username 2, username 3
+        {{!-- {{ #each }}
+          {{ username }}
+        {{ /each }} --}}
+      </p>
+    </div>
+  </div>
+</div>
+<div class="container pb-3"> <!-- TASKS -->
+  <div class="row h-100">
+    <div class="col-12 my-auto">
+      <h3 class="text-wrap black-text"><b>Tasks</b></h3>
+    </div>
+  </div>
+</div>
+<div class="container"> 
+  <div class="row h-100">
+    {{!-- {{ #each }} USERNAME CARD--}} 
+      <div class="col-sm-12 col-md-6 col-lg-4 pb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title font-weight-bold text-center">Username</h5>
+            {{!-- {{ #each }} TASK --}}
+              <!-- have to insert unique task id to toggle individual buttons -->
+              <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons">
+                <p>Clean the house</p>
+                <p>date: 27/07/19</p>
+              </button>
+              <div id="task-icons" class="collapse"> <!-- TASK ICONS -->
+                <div class="container-fluid">
+                  <div id="icon-row" class="row mt-2">
+                    <div id="task-check" class="col-4 text-center"> <!-- CHECK -->
+                      <button class="btn btn-outline-success pl-4 pr-4">
+                        <img class="icons" src="images/checkmark-icon.png" alt="nope"> 
+                      </button>
+                    </div>
+                    <div id="task-check" class="col-4 text-center"> <!-- EDIT -->
+                      <button class="btn btn-outline-primary pl-4 pr-4">
+                        <img class="icons" src="images/edit-icon.png" alt="nope"> 
+                      </button>
+                    </div>
+                    <div id="task-check" class="col-4 text-center"> <!-- DELETE -->
+                      <button class="btn btn-outline-danger pl-4 pr-4">
+                        <img class="icons" src="images/minus-icon.png" alt="nope"> 
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons">
+                <p>Do the dishes</p>
+                <p>date: 28/07/19</p>
+              </button>
+              <div id="task-icons" class="collapse"> <!-- TASK ICONS -->
+                <div class="container-fluid">
+                  <div id="icon-row" class="row mt-2">
+                    <div id="task-check" class="col-4 text-center"> <!-- CHECK -->
+                      <button class="btn btn-outline-success pl-4 pr-4">
+                        <img class="icons" src="images/checkmark-icon.png" alt="nope"> 
+                      </button>
+                    </div>
+                    <div id="task-check" class="col-4 text-center"> <!-- EDIT -->
+                      <button class="btn btn-outline-primary pl-4 pr-4">
+                        <img class="icons" src="images/edit-icon.png" alt="nope"> 
+                      </button>
+                    </div>
+                    <div id="task-check" class="col-4 text-center"> <!-- DELETE -->
+                      <button class="btn btn-outline-danger pl-4 pr-4">
+                        <img class="icons" src="images/minus-icon.png" alt="nope"> 
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {{!-- {{ /each }} --}}
+          </div>
+        </div>
+      </div>
+    {{!-- {{ /each }} --}}    
+  </div>
+</div>
+
