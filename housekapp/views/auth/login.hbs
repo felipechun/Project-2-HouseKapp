@@ -1,0 +1,10 @@
+<form action="/login" method="post">
+  <label for="email">Email:</label>
+  <input type="email" name="username" id="">
+  <label for="password">Password:</label>
+  <input type="password" name="password">
+  <input type="submit" value="Submit">
+  {{#if message}}
+    <p>{{message}}</p>
+  {{/if}}
+</form>

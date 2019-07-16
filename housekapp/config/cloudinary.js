@@ -9,7 +9,7 @@ cloudinary.config({
 });
 
 const storage = cloudinaryStorage({
-  cloudinary: cloudinary,
+  cloudinary,
   folder: 'HouseKapp', // The name of the folder in cloudinary
   allowedFormats: ['jpg', 'png'],
   filename: function (req, file, cb) {
@@ -17,6 +17,6 @@ const storage = cloudinaryStorage({
   }
 });
 
-const uploadCloud = multer({ storage: storage });
+const uploadCloud = multer({ storage });
 
 module.exports = uploadCloud;

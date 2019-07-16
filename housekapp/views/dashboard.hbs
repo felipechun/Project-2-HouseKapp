@@ -217,3 +217,38 @@ colocar opcoes de split bill --}}
 
 
 {{!-- Emmet abreviation div.box>h3+p*3{ola mundo} --}}
+
+
+
+{{!-- <h1>Dashboard</h1>
+<p>Email: {{user.username}}</p>
+<br><br><br><br>
+<form action="/create/group" method="post">
+  <label for="name">Name:</label>
+  <input type="text" name="name" id="group-name" placeholder="Insert group name">
+  <label for="name">People:</label>
+  <input type="text" name="people" id="group-name" placeholder="Insert email to send invite to">
+  <input type="text" name="creator" id="group-name" value="{{user.username}}" hidden="true">
+  <input type="submit" value="Submit">
+</form>
+<br><br><br><br>
+<form action="/create/task" method="post">
+  <label for="name">Name:</label>
+  <input type="text" name="name" id="task-name" placeholder="Insert task name">
+  <label for="name">Date:</label>
+  <input type="date" name="date" id="task-date">
+  <label for="value">Cost:</label>
+  <input type="number" name="value" id="task-value" placeholder="$0">
+
+  <input type="text" name="paidBy" id="task-name" placeholder="Created by" value="{{user.name}}">
+  <input type="submit" value="Submit">
+</form>
+
+{{!-- 
+name: String,
+date: [Schema.Types.Date],
+people: [Schema.Types.ObjectId],
+value: { type: Number, default: 0 },
+paidBy: { type: [Schema.Types.ObjectId], default: [null] },
+whoOwes: { type: [Schema.Types.ObjectId], default: [null] }, 
+--}} --}}
