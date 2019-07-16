@@ -27,6 +27,19 @@
     </div>
   </div>
 </div>
+<div class="container pb-3"> <!-- EXPENSES -->
+  <div class="row h-100">
+    <div class="col-lg-12 col-sm-12 my-auto">
+      <h3 class="text-wrap black-text"><b>Expenses</b> <!-- ADD EXPENSE MODAL BUTTON -->
+      <button class="btn" data-toggle="modal" data-target="#add-expense-modal">
+        {{!-- <a href="/add-expense"> --}}
+        <img src="images/plus-icon.png" class="icons plus-icon" alt="nope">
+        {{!-- </<img> --}}
+      </button>
+      </h3>
+    </div>
+  </div>
+</div>
 <div class="container"> 
   <div class="row h-100">
     {{!-- {{ #each users }} USERNAME CARD--}} 
@@ -104,32 +117,29 @@
 
 
 <!--Add Task Modal -->
-<div class="modal fade" id="add-task-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="add-task-modal" tabindex="-1" role="dialog"   aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-light border-0">
-        <h5 class="modal-title black-text" id="exampleModalLabel">New task or expense</h5>
+        <h5 class="modal-title black-text" id="exampleModalLabel">New task</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form action="/add-task" method="POST"> <!--FILL IN ADD TASK POST ROUTE-->
+        <form action="/create/task" method="POST"> <!--FILL IN ADD TASK POST ROUTE-->
           <div class="form-group">
-            <select onchange="addValueInput()" id="select-type" class="form-control" name="type"> <!-- onchange -->
-              <option value="task">Task</option>
-              <option value="expense">Expense</option>
-            </select>
+            <input type="text" name="name" class="form-control" placeholder="Task name" required>
           </div>
           <div class="form-group">
             <input type="date" name="date" class="form-control" placeholder="Date">
           </div>
           <div id="who-id" class="form-group">
             <label>Who is this for? </label>
-            <select class="form-control" name="group">
+            <select class="form-control" name="paidBy">
               {{!-- {{ #each user}} --}}
-              <option value="NAME OF USER">name of user</option>
-              <option value="second-user">second user</option>
+              <option name="whoOwes" value="name of user">name of user</option>
+              <option name="whoOwes" value="second-user">second user</option>
               {{!-- {{ /each }} --}}
             </select>
           </div>
@@ -139,3 +149,71 @@
     </div>
   </div>
 </div>
+
+
+<!--Add Expense Modal -->
+<div class="modal fade" id="add-expense-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-light border-0">
+        <h5 class="modal-title black-text" id="exampleModalLabel">New expense</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/create/expense" method="POST"> <!--FILL IN ADD EXPENSE POST ROUTE-->
+          <div class="form-group">
+            <input type="text" name="name" class="form-control" placeholder="Expense name" required>
+          </div>
+          <div class="form-group">
+            <input type="date" name="date" class="form-control" placeholder="Date">
+          </div>
+          <div class="form-group"> <!-- PAID BY -->
+            <label><b>Paid by: </b></label><br>
+            {{!-- {{ #each user }} --}}
+            <label>
+              <input type="checkbox" name="name" class="if-checked"> 
+              Rogerio <!-- name -->
+              <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true">
+            </label>
+            <br>
+            <label>
+              <input type="checkbox" name="name" class="if-checked"> 
+              Helena <!-- name -->
+              <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true">
+            </label>
+            {{!-- {{ /each }} --}}
+            <br><label><b>Owed by: </b></label><br>
+            {{!-- {{ #each user }} --}}
+            <label>
+              <input type="checkbox" name="name" class="if-checked"> 
+              Rogerio <!-- name -->
+              <input hidden disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" placeholder="Amount owed" required="true" value="<!-- insert total value after divided -->">
+            </label>
+            <br>
+            <label>
+              <input type="checkbox" name="name" class="if-checked"> 
+              Helena <!-- name -->
+              <input hidden disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" placeholder="Amount owed" required="true" value="<!-- insert total value after divided -->">
+            </label>
+            {{!-- {{ /each }} --}}
+          </div>
+          <button type="submit" class="btn btn-success">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- add expense
+name,
+date,
+value,
+paidBy, -> array de pessoas
+whoOwes, -> array de pessoas
+
+colocar opcoes de split bill --}}
+
+
+{{!-- Emmet abreviation div.box>h3+p*3{ola mundo} --}}
