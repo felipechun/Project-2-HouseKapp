@@ -1,34 +1,219 @@
-<h1>Dashboard</h1>
-<p>Email: {{user.username}}</p>
-<br><br><br><br>
-<form action="/create/group" method="post">
-  <label for="name">Name:</label>
-  <input type="text" name="name" id="group-name" placeholder="Insert group name">
-  <label for="name">People:</label>
-  <input type="text" name="people" id="group-name" placeholder="Insert email to send invite to">
-  <input type="text" name="creator" id="group-name" value="{{user.username}}" hidden="true">
-  <input type="submit" value="Submit">
-</form>
-<br><br><br><br>
-<form action="/create/task" method="post">
-  <label for="name">Name:</label>
-  <input type="text" name="name" id="task-name" placeholder="Insert task name">
-  <label for="name">Date:</label>
-  <input type="date" name="date" id="task-date">
-  <label for="value">Cost:</label>
-  <input type="number" name="value" id="task-value" placeholder="$0">
-  <label for="whoOwes">Who Owes:</label>
-  <input type="name" name="whoOwes" id="task-owes" placeholder="Name">
+<div class="container mb-4 mt-5"> <!-- house name and members -->
+  <div class="row h-100">
+    <div class="col-lg-6 col-md-9 col-sm-12">
+      <h1 class="text-wrap black-text"><b>My Home  </b>
+      </h1>
+      <p class="text-wrap black-text member-name">
+        Roommates: username 1, username 2, username 3
+        {{!-- {{ #each }}
+          {{ username }}
+        {{ /each }} --}}
+      </p>
+      {{!-- EDIT HOME MODAL BUTTON --}}
+      <button class="btn-sm btn-outline-dark edit-button" data-toggle="modal" data-target="#edit-home-modal">Edit</button>
+    </div>
+  </div>
+</div>
+<div class="container pb-3"> <!-- TASKS -->
+  <div class="row h-100">
+    <div class="col-lg-12 col-sm-12 my-auto">
+      <h3 class="text-wrap black-text"><b>Tasks</b> <!-- ADD TASK MODAL BUTTON -->
+      <button class="btn" data-toggle="modal" data-target="#add-task-modal">
+        {{!-- <a href="/add-task"> --}}
+        <img src="images/plus-icon.png" class="icons plus-icon" alt="nope">
+        {{!-- </a> --}}
+      </button>
+      </h3>
+    </div>
+  </div>
+</div>
+<div class="container pb-3"> <!-- EXPENSES -->
+  <div class="row h-100">
+    <div class="col-lg-12 col-sm-12 my-auto">
+      <h3 class="text-wrap black-text"><b>Expenses</b> <!-- ADD EXPENSE MODAL BUTTON -->
+      <button class="btn" data-toggle="modal" data-target="#add-expense-modal">
+        {{!-- <a href="/add-expense"> --}}
+        <img src="images/plus-icon.png" class="icons plus-icon" alt="nope">
+        {{!-- </<img> --}}
+      </button>
+      </h3>
+    </div>
+  </div>
+</div>
+<div class="container"> 
+  <div class="row h-100">
+    {{!-- {{ #each users }} USERNAME CARD--}} 
+      <div class="col-sm-12 col-md-6 col-lg-4 pb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title font-weight-bold text-center">Username</h5>
+            {{!-- {{ #each }} TASK --}}
+              <!-- have to insert unique task id to toggle individual buttons -->
+              <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons"> 
+                <p>Clean the house</p>
+                <p>date: 27/07/19</p>
+              </button>
+              <div id="task-icons" class="collapse"> <!-- TASK ICONS -->
+                <div class="container-fluid">
+                  <div id="icon-row" class="row mt-2">
+                    <div id="task-check" class="col-4 text-center"> <!-- CHECK -->
+                      <button class="btn btn-outline-success pl-4 pr-4">
+                        <img class="icons" src="images/checkmark-icon.png" alt="nope"> 
+                      </button>
+                    </div>
+                    <div id="task-check" class="col-4 text-center"> <!-- EDIT -->
+                      <button class="btn btn-outline-primary pl-4 pr-4">
+                        <img class="icons" src="images/edit-icon.png" alt="nope"> 
+                      </button>
+                    </div>
+                    <div id="task-check" class="col-4 text-center"> <!-- DELETE -->
+                      <button class="btn btn-outline-danger pl-4 pr-4">
+                        <img class="icons" src="images/minus-icon.png" alt="nope"> 
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {{!-- {{ /each }} --}}
+          </div>
+        </div>
+      </div>
+    {{!-- {{ /each }} --}}    
+  </div>
+</div>
 
-  <input type="text" name="paidBy" id="task-name" placeholder="Created by" value="{{user.name}}" hidden="true">
-  <input type="submit" value="Submit">
-</form>
 
-{{!-- 
-name: String,
-date: [Schema.Types.Date],
-people: [Schema.Types.ObjectId],
-value: { type: Number, default: 0 },
-paidBy: { type: [Schema.Types.ObjectId], default: [null] },
-whoOwes: { type: [Schema.Types.ObjectId], default: [null] }, 
---}}
+
+<!--Edit Home Modal -->
+<div class="modal fade" id="edit-home-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-light border-0">
+        <h5 class="modal-title black-text" id="exampleModalLabel">Edit your home and roommates</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/edit-home" method="POST"> <!--FILL IN EDIT HOME POST ROUTE-->
+          <div class="form-group">
+            <input type="text" name="name" class="form-control" value="<!-- Home name -->">
+          </div>
+          {{!-- {{ #each name }} --}}
+        <div class="form-group">
+            <input type="text" name="name" class="form-control" value="<!-- name -->">
+          </div>
+        {{!-- {{ /each }} --}}
+        <!-- insert new input for a roomate -->
+          <button type="button" id="add-roommate" class="btn btn-primary">Invite a roomate</button>
+          <button type="submit" class="btn btn-success">Edit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!--Add Task Modal -->
+<div class="modal fade" id="add-task-modal" tabindex="-1" role="dialog"   aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-light border-0">
+        <h5 class="modal-title black-text" id="exampleModalLabel">New task</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/create/task" method="POST"> <!--FILL IN ADD TASK POST ROUTE-->
+          <div class="form-group">
+            <input type="text" name="name" class="form-control" placeholder="Task name" required>
+          </div>
+          <div class="form-group">
+            <input type="date" name="date" class="form-control" placeholder="Date">
+          </div>
+          <div id="who-id" class="form-group">
+            <label>Who is this for? </label>
+            <select class="form-control" name="paidBy">
+              {{!-- {{ #each user}} --}}
+              <option name="whoOwes" value="name of user">name of user</option>
+              <option name="whoOwes" value="second-user">second user</option>
+              {{!-- {{ /each }} --}}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Add Expense Modal -->
+<div class="modal fade" id="add-expense-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-light border-0">
+        <h5 class="modal-title black-text" id="exampleModalLabel">New expense</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/create/expense" method="POST"> <!--FILL IN ADD EXPENSE POST ROUTE-->
+          <div class="form-group">
+            <input type="text" name="name" class="form-control" placeholder="Expense name" required>
+          </div>
+          <div class="form-group">
+            <input type="date" name="date" class="form-control" placeholder="Date">
+          </div>
+          <div class="form-group"> <!-- PAID BY -->
+            <label><b>Paid by: </b></label><br>
+            {{!-- {{ #each user }} --}}
+            <label>
+              <input type="checkbox" name="name" class="if-checked"> 
+              Rogerio <!-- name -->
+              <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true">
+            </label>
+            <br>
+            <label>
+              <input type="checkbox" name="name" class="if-checked"> 
+              Helena <!-- name -->
+              <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true">
+            </label>
+            {{!-- {{ /each }} --}}
+            <br><label><b>Owed by: </b></label><br>
+            {{!-- {{ #each user }} --}}
+            <label>
+              <input type="checkbox" name="name" class="if-checked"> 
+              Rogerio <!-- name -->
+              <input hidden disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" placeholder="Amount owed" required="true" value="<!-- insert total value after divided -->">
+            </label>
+            <br>
+            <label>
+              <input type="checkbox" name="name" class="if-checked"> 
+              Helena <!-- name -->
+              <input hidden disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" placeholder="Amount owed" required="true" value="<!-- insert total value after divided -->">
+            </label>
+            {{!-- {{ /each }} --}}
+          </div>
+          <button type="submit" class="btn btn-success">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- add expense
+name,
+date,
+value,
+paidBy, -> array de pessoas
+whoOwes, -> array de pessoas
+
+colocar opcoes de split bill --}}
+
+
+{{!-- Emmet abreviation div.box>h3+p*3{ola mundo} --}}

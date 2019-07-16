@@ -1,0 +1,23 @@
+<div class="container mb-4 mt-5">
+  <div class="row h-100">
+    <div class="col-lg-6 col-md-9 col-sm-12 my-auto">
+      <h1 class="text-wrap black-text"><b>Create a Home</b></h1>
+    </div>
+  </div>
+</div>
+<div class="container mb-4 mt-3">
+  <div class="row h-100">
+    <div class="col-lg-6 col-md-9 col-sm-12 my-auto">
+      <form action="/add-home" method="POST"> <!--FILL IN ADD HOME POST ROUTE-->
+        <div class="form-group">
+          <input type="text" name="name" class="form-control" placeholder="Home name">
+        </div>
+        <!-- insert new input for a roomate -->
+        <button type="button" id="add-roommate" class="btn btn-primary">Invite a roomate</button>
+        <button type="submit" class="btn btn-success">Done</button> <!-- redirect to dashboard -->
+      </form>
+    </div>
+  </div>
+</div>
+
+{{!-- <button type="button" id="remove-roommate" class="btn btn-danger">Cancel</button> --}}
