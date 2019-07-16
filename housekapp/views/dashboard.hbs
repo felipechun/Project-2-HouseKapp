@@ -17,8 +17,10 @@
   <input type="date" name="date" id="task-date">
   <label for="value">Cost:</label>
   <input type="number" name="value" id="task-value" placeholder="$0">
+  <label for="whoOwes">Who Owes:</label>
+  <input type="name" name="whoOwes" id="task-owes" placeholder="Name">
 
-  <input type="text" name="paidBy" id="task-name" placeholder="Created by" value="{{user.name}}">
+  <input type="text" name="paidBy" id="task-name" placeholder="Created by" value="{{user.name}}" hidden="true">
   <input type="submit" value="Submit">
 </form>
 

@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const groupSchema = new Schema({
   name: String,
-  people: { type: [String] },
+  people: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 }, {
   timestamps: {
     createdAt: 'created_at',
