@@ -16,7 +16,7 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-  <a class="navbar-brand" href="/">Housekapp</a>
+  <a class="navbar-brand" href="/"><b>Housekapp</b></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -88,13 +88,16 @@
       <div class="modal-body">
         <form action="/signup" method="POST" enctype="multipart/form-data"> <!--FILL IN SIGN UP POST ROUTE-->
           <div class="form-group">
-            <input type="text" name="username" class="form-control" placeholder="Username">
+            <input type="text" name="name" class="form-control" placeholder="Name">
           </div>
           <div class="form-group">
             <input type="email" name="email" class="form-control" placeholder="Email">
           </div>
           <div class="form-group">
             <input type="password" name="password" class="form-control" placeholder="Password">
+          </div>
+          <div class="form-group">
+            <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password">
           </div>
           <div class="form-group">
             <label for="profile-pic" class="text-muted pl-2">Your picture </label>
@@ -108,7 +111,7 @@
 </div>
 
   {{{body}}}
-<footer class="navbar sticky-bottom the-nav-color">
+<footer class="navbar fixed-bottom the-nav-color">
   <a class="navbar-item nav-link the-nav-color">contact@housekapp.com</a>
   <a class="navbar-item the-nav-color">Copyright 2019. All rights reserved</a>
 </footer>

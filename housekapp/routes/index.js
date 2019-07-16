@@ -15,4 +15,19 @@ router.get('/dashboard', (req, res, next) => {
   res.render('dashboard');
 });
 
+// GET add home page
+router.get('/add-home', (req, res, next) => {
+  res.render('addhome');
+});
+
+// GET invite signup page
+router.get('/invite-signup', (req, res, next) => {
+  res.render('./auth/invite-signup');
+});
+
+// GET verification page
+router.get('/verification', (req, res, next) => {
+  res.render('verification');
+});
+
 module.exports = router;

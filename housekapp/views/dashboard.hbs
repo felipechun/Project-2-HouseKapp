@@ -1,60 +1,44 @@
 <div class="container mb-4 mt-5"> <!-- house name and members -->
   <div class="row h-100">
-    <div class="col-lg-6 col-md-9 col-sm-12 my-auto">
-      <h1 class="text-wrap black-text"><b>My Home</b></h1>
+    <div class="col-lg-6 col-md-9 col-sm-12">
+      <h1 class="text-wrap black-text"><b>My Home  </b>
+      </h1>
       <p class="text-wrap black-text member-name">
         Roommates: username 1, username 2, username 3
         {{!-- {{ #each }}
           {{ username }}
         {{ /each }} --}}
       </p>
+      {{!-- EDIT HOME MODAL BUTTON --}}
+      <button class="btn-sm btn-outline-dark edit-button" data-toggle="modal" data-target="#edit-home-modal">Edit</button>
     </div>
   </div>
 </div>
 <div class="container pb-3"> <!-- TASKS -->
   <div class="row h-100">
-    <div class="col-12 my-auto">
-      <h3 class="text-wrap black-text"><b>Tasks</b></h3>
+    <div class="col-lg-12 col-sm-12 my-auto">
+      <h3 class="text-wrap black-text"><b>Tasks</b> <!-- ADD TASK MODAL BUTTON -->
+      <button class="btn" data-toggle="modal" data-target="#add-task-modal">
+        {{!-- <a href="/add-task"> --}}
+        <img src="images/plus-icon.png" class="icons plus-icon" alt="nope">
+        {{!-- </a> --}}
+      </button>
+      </h3>
     </div>
   </div>
 </div>
 <div class="container"> 
   <div class="row h-100">
-    {{!-- {{ #each }} USERNAME CARD--}} 
+    {{!-- {{ #each users }} USERNAME CARD--}} 
       <div class="col-sm-12 col-md-6 col-lg-4 pb-3">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title font-weight-bold text-center">Username</h5>
             {{!-- {{ #each }} TASK --}}
               <!-- have to insert unique task id to toggle individual buttons -->
-              <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons">
+              <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons"> 
                 <p>Clean the house</p>
                 <p>date: 27/07/19</p>
-              </button>
-              <div id="task-icons" class="collapse"> <!-- TASK ICONS -->
-                <div class="container-fluid">
-                  <div id="icon-row" class="row mt-2">
-                    <div id="task-check" class="col-4 text-center"> <!-- CHECK -->
-                      <button class="btn btn-outline-success pl-4 pr-4">
-                        <img class="icons" src="images/checkmark-icon.png" alt="nope"> 
-                      </button>
-                    </div>
-                    <div id="task-check" class="col-4 text-center"> <!-- EDIT -->
-                      <button class="btn btn-outline-primary pl-4 pr-4">
-                        <img class="icons" src="images/edit-icon.png" alt="nope"> 
-                      </button>
-                    </div>
-                    <div id="task-check" class="col-4 text-center"> <!-- DELETE -->
-                      <button class="btn btn-outline-danger pl-4 pr-4">
-                        <img class="icons" src="images/minus-icon.png" alt="nope"> 
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons">
-                <p>Do the dishes</p>
-                <p>date: 28/07/19</p>
               </button>
               <div id="task-icons" class="collapse"> <!-- TASK ICONS -->
                 <div class="container-fluid">
@@ -85,3 +69,73 @@
   </div>
 </div>
 
+
+
+<!--Edit Home Modal -->
+<div class="modal fade" id="edit-home-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-light border-0">
+        <h5 class="modal-title black-text" id="exampleModalLabel">Edit your home and roommates</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/edit-home" method="POST"> <!--FILL IN EDIT HOME POST ROUTE-->
+          <div class="form-group">
+            <input type="text" name="name" class="form-control" value="<!-- Home name -->">
+          </div>
+          {{!-- {{ #each name }} --}}
+        <div class="form-group">
+            <input type="text" name="name" class="form-control" value="<!-- name -->">
+          </div>
+        {{!-- {{ /each }} --}}
+        <!-- insert new input for a roomate -->
+          <button type="button" id="add-roommate" class="btn btn-primary">Invite a roomate</button>
+          <button type="submit" class="btn btn-success">Edit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!--Add Task Modal -->
+<div class="modal fade" id="add-task-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-light border-0">
+        <h5 class="modal-title black-text" id="exampleModalLabel">New task or expense</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/add-task" method="POST"> <!--FILL IN ADD TASK POST ROUTE-->
+          <div class="form-group">
+            <select onchange="addValueInput()" id="select-type" class="form-control" name="type"> <!-- onchange -->
+              <option value="task">Task</option>
+              <option value="expense">Expense</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="date" name="date" class="form-control" placeholder="Date">
+          </div>
+          <div id="who-id" class="form-group">
+            <label>Who is this for? </label>
+            <select class="form-control" name="group">
+              {{!-- {{ #each user}} --}}
+              <option value="NAME OF USER">name of user</option>
+              <option value="second-user">second user</option>
+              {{!-- {{ /each }} --}}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
