@@ -288,6 +288,7 @@
               {{!-- <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true"> --}}
             </label>
             {{/each }}
+            <input type="number" step="0.01" name="amountPaid" placeholder="Amount Paid">
             <br><label><b>Owed by: </b></label><br>
             {{#each group.people}}
             <label>

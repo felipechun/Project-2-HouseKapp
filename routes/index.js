@@ -82,15 +82,17 @@ router.post('/create/task', (req, res) => {
     name,
     date,
     value,
+    amountPaid,
     paidBy,
     whoOwes,
   } = req.body;
 
   const originGroup = req.user.groupId;
+  const amountDue = value - amountPaid;
 
   // whoOwes E paidBy RECEBEM COMO VALUE O GROUP.PEOPLE._ID NO FRONT
 
-  const newTask = new Task({ name, date, value, originGroup });
+  const newTask = new Task({ name, date, value, amountPaid, amountDue, originGroup });
 
   newTask.save()
     .then((task) => {
@@ -143,7 +145,7 @@ router.post('/create/task', (req, res) => {
 router.get('/edit/group/:groupId', (req, res) => {
   const { groupId } = req.params;
   Group.findById(groupId)
-    .populate('people', 'name')
+    .populate('people')
     .then((group) => {
       res.render('editGroup', { group });
     })
@@ -169,7 +171,6 @@ router.get('/edit/task/:taskId', (req, res) => {
   Task.findById(taskId)
     .populate('whoOwes paidBy')
     .then((task) => {
-      console.log(task);
       // const evenSplit = task.value / (task.whoOwes.length + task.paidBy.length);
       // const roundEvenSplit = evenSplit.toFixed(2);
       res.render('editTask', { task });
@@ -182,21 +183,53 @@ router.post('/edit/task/:taskId', (req, res) => {
     name,
     date,
     value,
+    amountPaid,
     paidBy,
     whoOwes,
   } = req.body;
 
-  Task.findByIdAndUpdate(req.params.taskId, {
-    name,
-    date,
-    value,
-    paidBy: { $set: { paidBy } },
-    whoOwes: { $set: { whoOwes } },
-  })
+  let { amountDue } = req.body;
+
+  // muda status de pagamento
+  const paymentStatusPromise = Task.findById(req.params.taskId)
+    // .populate('paidBy whoOwes')
     .then((task) => {
-      if (task.whoOwes.length === 0) {
-        Task.findByIdAndUpdate(req.params.taskId, { completed: true });
+      const owes = [];
+      task.whoOwes.map(user => owes.push(user));
+
+      // req.body.paidBy tem que me dar um id
+
+      if (task.whoOwes.indexOf(req.body.paidBy) !== -1) {
+        if (amountDue) {
+          amountDue -= amountPaid;
+        }
+
+        Task.findByIdAndUpdate(task._id, { $push: { paidBy: req.body.paidBy }, $pull: { whoOwes: req.body.paidBy }, amountDue })
+          .then((tk) => {
+            if (tk.whoOwes.length === 1) {
+              Task.findByIdAndUpdate(task._id, { completed: true })
+                .then(f => f)
+                .catch(e => console.log(e));
+            }
+          })
+          .catch(e => console.log(e));
       }
+    })
+    .catch(err => console.log(err));
+
+  // muda nome e data
+  const nameDatePromise = Task.findById(req.params.taskId)
+    // .populate('paidBy whoOwes')
+    .then((task) => {
+      Task.findByIdAndUpdate(task._id, { name, date })
+        .then(x => x)
+        .catch(e => console.log(e));
+    })
+    .catch(err => console.log(err));
+
+  Promise.all([paymentStatusPromise, nameDatePromise])
+    .then(() => {
+      res.redirect('/dashboard');
     })
     .catch(err => console.log(err));
 });
