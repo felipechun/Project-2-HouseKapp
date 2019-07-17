@@ -90,16 +90,23 @@
               <div class="col-3 text-left">
                 <a class="card-text">Expense name</a>
                 <button class="btn border-none" data-toggle="modal" data-target="#edit-expense-modal">
-                  <img class="icons" src="images/edit-icon.png" alt="nope"> 
+                  <img class="icons" src="images/checkmark-icon.png" alt="nope"> 
                 </button>
               </div>
-              <div class="col-3 text-right">
+              <div class="col-2 text-right">
                 <a class="card-text text-muted text-right">Value</a>
               </div>
-              <div class="col-3 text-right">
-                <a class="card-text text-muted text-right">Roomate</a>
+              {{!-- {{ #each paidBy }} --}}
+              <div class="col-2 text-right">
+                <a class="card-text text-muted text-right">Name paid: $35</a>
               </div>
+              {{!-- {{ /each }} --}}
+              {{!-- {{ #each whoOwes }} --}}
               <div class="col-3 text-right">
+                <a class="card-text text-muted text-right">Name owes: $15</a>
+              </div>
+              {{!-- {{ /each }} --}}
+              <div class="col-2 text-right">
                 <a class="card-text text-muted text-right">27/07/19</a>
               </div>
             </div>
@@ -256,6 +263,9 @@
             <input type="text" name="name" class="form-control" placeholder="Expense name" required>
           </div>
           <div class="form-group">
+            <input type="text" name="value" class="form-control" placeholder="Total value" required>
+          </div>
+          <div class="form-group">
             <input type="date" name="date" class="form-control" placeholder="Date">
           </div>
           <div class="form-group"> <!-- PAID BY -->
@@ -298,12 +308,12 @@
 
 
 
-<!--Edit Expense Modal -->
+<!--Pay Expense Modal -->
 <div class="modal fade" id="edit-expense-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-light border-0">
-        <h5 class="modal-title black-text" id="exampleModalLabel">Edit expense</h5>
+        <h5 class="modal-title black-text" id="exampleModalLabel">Pay expense</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -311,35 +321,29 @@
       <div class="modal-body">
         <form action="/edit/expense" method="POST"> <!--FILL IN ADD EXPENSE POST ROUTE-->
           <div class="form-group">
-            <input type="text" name="name" class="form-control" value="expense name to be edited" required>
+            <input disabled type="text" name="name" class="form-control" value="expense name">
           </div>
           <div class="form-group">
-            <input type="date" name="date" class="form-control" value="date to be edited">
+            <input disabled type="text" name="value" class="form-control" value="total value">
+          </div>
+          <div class="form-group">
+            <input disabled type="date" name="date" class="form-control" value="date">
           </div>
           <div class="form-group"> <!-- PAID BY -->
             <label><b>Paid by: </b></label><br>
             {{!-- {{ #each user }} --}}
             <label> 
               Rogerio <!-- name -->
-              <input type="number" name="amountPaid" class="form-control amount-paid mb-2" value="amount paid to be edited">
-            </label>
-            <br>
-            <label> 
-              Helena <!-- name -->
-              <input type="number" name="amountPaid" class="form-control amount-paid mb-2" value="amount paid to be edited">
+              <input disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" value="">
             </label>
             {{!-- {{ /each }} --}}
             <br><label><b>Owed by: </b></label><br>
             {{!-- {{ #each user }} --}}
             <label> 
               Rogerio <!-- name -->
-              <input type="number" name="amountOwed" class="form-control amount-paid mb-2" value="<!-- insert total value after divided -->">
+              <input disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" value="<!-- insert total value after divided -->">
             </label>
             <br>
-            <label> 
-              Helena <!-- name -->
-              <input type="number" name="amountOwed" class="form-control amount-paid mb-2" value="<!-- insert total value after divided -->">
-            </label>
             {{!-- {{ /each }} --}}
           </div>
           <button type="submit" class="btn btn-success">Edit</button>
