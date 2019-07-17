@@ -94,7 +94,7 @@
             <div class="row">
               <div class="col-md-3 col-xs-12 text-left">
                 <a class="card-text">{{name}}</a>
-                <button class="btn border-none" data-toggle="modal" data-target="#edit-expense-modal">
+                <button class="btn border-none" data-toggle="collapse" data-target="#pay-expense">
                   <img class="icons" src="images/checkmark-icon.png" alt="nope" id-attr="{{_id}}"> 
                 </button>
               </div>
@@ -121,6 +121,32 @@
                 <a class="card-text text-muted text-right">{{date}}</a>
               </div>
             </div>
+            <div id="pay-expense" class="collapse"> <!-- EXPENSE COLLAPSE -->
+                <div class="container-fluid">
+                  <div id="icon-row" class="row mt-2">
+                    <div id="" class="col-4 text-left"> <!-- PAID -->
+                      <label>Paid: </label>
+                      {{#each paidBy}}
+                          <span>{{name}}</span>
+                      {{/each}}
+                    </div>
+                    <div id="" class="col-2 text-left"> <!-- AMOUNT DUE -->
+                      <label>Amount Due: {{amountDue}}</label>  
+                    </div>
+                    <div id="" class="col-6 text-center"> <!-- OWES -->
+                      <form action="/edit/task/{{_id}}" method="POST">
+                        <label>Owes: </label>
+                        {{#each whoOwes}}
+                          <input type="radio" name="paidBy" value="{{_id}}">
+                          <label>{{name}}</label>
+                        {{/each}}
+                        <input type="number" name="amountPaid" step="0.01" placeholder="How much to pay">
+                        <button class="btn btn-success" type="submit">Pay</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
             {{/if}}
           {{/each }}
         </div>
