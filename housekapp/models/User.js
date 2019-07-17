@@ -13,7 +13,6 @@ const userSchema = new Schema({
   groupId: { type: Schema.Types.ObjectId, default: null },
   confirmationCode: { type: String, required: true },
   tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
-  expenses: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
   imgPath: String,
   imgName: String,
 }, {

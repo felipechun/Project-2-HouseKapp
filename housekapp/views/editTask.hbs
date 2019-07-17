@@ -1,7 +1,10 @@
 <h1>{{task.name}}</h1>
+<h2>Paid By</h2>
+<h3>Amount spent: R$ {{task.value}}</h3>
 {{#each task.paidBy}}
   <li>{{name}}</li>
 {{/each}}
+<h2>Who Owes</h2>
 {{#each task.whoOwes}}
-  <li>{{name}}</li>
+  <li>{{name}} owes: R$ {{../roundEvenSplit}}</li>
 {{/each}}

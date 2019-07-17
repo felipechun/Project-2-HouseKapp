@@ -4,10 +4,10 @@
       <h1 class="text-wrap black-text"><b>My Home  </b> <!-- add group name -->
       </h1>
       <p class="text-wrap black-text member-name">
-        Roommates: 
-        {{!-- {{ #each group.people }} --}}
-          {{ user.name }}
-        {{!-- {{ /each }} --}}
+        {{!-- Roommates: username 1, username 2, username 3 --}}
+        {{#each group.people}}
+          <p>{{name}}</p>
+        {{/each }}
       </p>
       {{!-- EDIT HOME MODAL BUTTON --}}
       <button class="btn-sm btn-outline-dark edit-button" data-toggle="modal" data-target="#edit-home-modal">Edit</button>
@@ -37,11 +37,11 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title font-weight-bold text-center">Username</h5>
-            {{!-- {{ #each }} TASK --}}
+            {{#each user.tasks}}
               <!-- have to insert unique task id to toggle individual buttons -->
               <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons"> 
-                <p>Clean the house</p>
-                <p>date: 27/07/19</p>
+                <p>{{name}}</p>
+                <p>{{date}}</p>
               </button>
               <div id="task-icons" class="collapse"> <!-- TASK ICONS -->
                 <div class="container-fluid">
@@ -64,7 +64,7 @@
                   </div>
                 </div>
               </div>
-            {{!-- {{ /each }} --}}
+            {{/each }}
           </div>
         </div>
       </div>

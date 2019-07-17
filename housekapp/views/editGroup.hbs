@@ -1,7 +1,12 @@
-<form action="/edit/group/{{groupId}}" method="post">
+<form action="/edit/group/{{group._id}}" method="post">
   <label for="name">Name:</label>
-  <input type="text" name="name" id="group-name" placeholder="Insert group name">
+  <input type="text" name="name" id="group-name" value={{group.name}}>
   <label for="name">People:</label>
   <input type="text" name="people" id="group-name" placeholder="Insert email to send invite to">
   <input type="submit" value="Submit">
 </form>
+
+{{group.name}}
+{{#each group.people}}
+{{name}}
+{{/each}}
