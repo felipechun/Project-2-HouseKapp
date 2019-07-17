@@ -8,7 +8,6 @@ const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
 const session = require('express-session');
-const nodemailer = require('nodemailer');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
@@ -45,14 +44,14 @@ app.use(require('node-sass-middleware')({
 }));
 
 app.use(session({
-  secret: 'tumblrlabdev',
+  secret: 'housekappdev',
   resave: false,
   saveUninitialized: true,
   store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }));
 
 passport.serializeUser((user, cb) => {
-  cb(null, user.id);
+  cb(null, user._id);
 });
 
 passport.deserializeUser((id, cb) => {
@@ -62,16 +61,16 @@ passport.deserializeUser((id, cb) => {
   });
 });
 
-passport.use('local-login', new LocalStrategy((username, password, next) => {
+passport.use(new LocalStrategy((username, password, next) => {
   User.findOne({ username }, (err, user) => {
     if (err) {
       return next(err);
     }
     if (!user) {
-      return next(null, false, { message: 'Incorrect username' });
+      return next(null, false, { message: "Incorrect username" });
     }
     if (!bcrypt.compareSync(password, user.password)) {
-      return next(null, false, { message: 'Incorrect password' });
+      return next(null, false, { message: "Incorrect password" });
     }
 
     return next(null, user);
@@ -80,17 +79,11 @@ passport.use('local-login', new LocalStrategy((username, password, next) => {
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-// default value for title local
-app.locals.title = 'Express - Generated with IronGenerator';
 
 const authRoutes = require('./routes/auth');
 app.use('/', authRoutes);

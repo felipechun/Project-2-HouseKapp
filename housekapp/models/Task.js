@@ -2,13 +2,12 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const tasksSchema = new Schema({
+const taskSchema = new Schema({
   name: String,
-  date: [Schema.Types.Date],
-  people: [Schema.Types.ObjectId],
+  date: Schema.Types.Date,
   value: { type: Number, default: 0 },
-  paidBy: { type: Schema.Types.ObjectId, default: null },
-  whoOwes: { type: [Schema.Types.ObjectId], default: [null] },
+  paidBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  whoOwes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   completed: { type: Boolean, default: false },
 }, {
   timestamps: {
@@ -17,5 +16,8 @@ const tasksSchema = new Schema({
   },
 });
 
-const Tasks = mongoose.model('Tasks', tasksSchema);
-module.exports = Tasks;
+
+// editar estrutura paidBy e whoOwes -> Obj nome e valor;
+
+const Task = mongoose.model('Task', taskSchema);
+module.exports = Task;

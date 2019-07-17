@@ -9,14 +9,14 @@ cloudinary.config({
 });
 
 const storage = cloudinaryStorage({
-  cloudinary: cloudinary,
-  folder: 'ironTumblr', // The name of the folder in cloudinary
+  cloudinary,
+  folder: 'HouseKapp', // The name of the folder in cloudinary
   allowedFormats: ['jpg', 'png'],
   filename: function (req, file, cb) {
     cb(null, file.originalname); // The file on cloudinary would have the same name as the original file name
   }
 });
 
-const uploadCloud = multer({ storage: storage });
+const uploadCloud = multer({ storage });
 
 module.exports = uploadCloud;
