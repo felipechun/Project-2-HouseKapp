@@ -1,13 +1,15 @@
 <div class="container mb-4 mt-5"> <!-- house name and members -->
   <div class="row h-100">
     <div class="col-lg-6 col-md-9 col-sm-12">
-      <h1 class="text-wrap black-text"><b>My Home  </b> <!-- add group name -->
+      <h1 class="text-wrap black-text"><b>{{group.name}}</b> <!-- add group name -->
       </h1>
       <p class="text-wrap black-text member-name">
         {{!-- Roommates: username 1, username 2, username 3 --}}
+          <p>Roommates: 
         {{#each group.people}}
-          <p>{{name}}</p>
+          {{name}} | 
         {{/each }}
+          </p>
       </p>
       {{!-- EDIT HOME MODAL BUTTON --}}
       <button class="btn-sm btn-outline-dark edit-button" data-toggle="modal" data-target="#edit-home-modal">Edit</button>
@@ -32,18 +34,19 @@
  <!-- USER TASKS -->
 <div class="container"> 
   <div class="row h-100">
-    {{!-- {{ #each users }} USERNAME CARD--}} 
+    {{#each users}}
       <div class="col-sm-12 col-md-6 col-lg-4 pb-3">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title font-weight-bold text-center">Username</h5>
-            {{#each user.tasks}}
+            <h5 class="card-title font-weight-bold text-center">{{name}}</h5>
+              {{#each tasks}}
+              {{#unless value}}
               <!-- have to insert unique task id to toggle individual buttons -->
-              <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons"> 
+              <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons{{_id}}{{../_id}}"> 
                 <p>{{name}}</p>
                 <p>{{date}}</p>
               </button>
-              <div id="task-icons" class="collapse"> <!-- TASK ICONS -->
+              <div id="task-icons{{_id}}{{../_id}}" class="collapse"> <!-- TASK ICONS -->
                 <div class="container-fluid">
                   <div id="icon-row" class="row mt-2">
                     <div id="task-check" class="col-4 text-center"> <!-- CHECK -->
@@ -64,11 +67,12 @@
                   </div>
                 </div>
               </div>
-            {{/each }}
+              {{/unless}}
+            {{/each}}
           </div>
         </div>
       </div>
-    {{!-- {{ /each }} --}}    
+    {{/each}}  
   </div>
 </div>
 
@@ -85,32 +89,40 @@
         <img src="images/plus-icon.png" class="icons plus-icon" alt="nope">
             </button>
           </h3>
-          {{!-- {{ #each expense }} --}}
+          {{#each tasks}}
+            {{#if value}}
             <div class="row">
-              <div class="col-3 text-left">
-                <a class="card-text">Expense name</a>
+              <div class="col-md-3 col-xs-12 text-left">
+                <a class="card-text">{{name}}</a>
                 <button class="btn border-none" data-toggle="modal" data-target="#edit-expense-modal">
-                  <img class="icons" src="images/checkmark-icon.png" alt="nope"> 
+                  <img class="icons" src="images/checkmark-icon.png" alt="nope" id-attr="{{_id}}"> 
                 </button>
               </div>
-              <div class="col-2 text-right">
-                <a class="card-text text-muted text-right">Value</a>
+              <div class="col-md-2 col-xs-12 text-left">
+                <a class="card-text text-muted text-right">Amount: ${{value}}</a>
               </div>
-              {{!-- {{ #each paidBy }} --}}
-              <div class="col-2 text-right">
-                <a class="card-text text-muted text-right">Name paid: $35</a>
+              <div class="col-md-2 col-xs-12 text-left">
+                Paid: 
+                <a class="card-text text-muted text-right">
+                  {{#each paidBy}}
+                  {{name}} | 
+                  {{/each }}
+                </a>
+              </div>             
+              <div class="col-md-3 col-xs-12 text-left">
+                Owes: 
+                <a class="card-text text-muted text-right">
+              {{#each whoOwes}}
+                {{name}} | 
+              {{/each}}
+                   </a>
               </div>
-              {{!-- {{ /each }} --}}
-              {{!-- {{ #each whoOwes }} --}}
-              <div class="col-3 text-right">
-                <a class="card-text text-muted text-right">Name owes: $15</a>
-              </div>
-              {{!-- {{ /each }} --}}
-              <div class="col-2 text-right">
-                <a class="card-text text-muted text-right">27/07/19</a>
+              <div class="col-md-2 col-xs-12 text-left">
+                <a class="card-text text-muted text-right">{{date}}</a>
               </div>
             </div>
-          {{!-- {{ /each }} --}}
+            {{/if}}
+          {{/each }}
         </div>
       </div>
     </div>
@@ -196,10 +208,9 @@
           <div id="who-id" class="form-group">
             <label>Who is this for? </label>
             <select class="form-control" name="paidBy">
-              {{!-- {{ #each user}} --}}
-              <option name="whoOwes" value="name of user">name of user</option>
-              <option name="whoOwes" value="second-user">second user</option>
-              {{!-- {{ /each }} --}}
+              {{#each group.people}}
+              <option name="paidBy" value="{{_id}}">{{name}}</option>
+              {{/each }}
             </select>
           </div>
           <button type="submit" class="btn btn-success">Add</button>
@@ -258,7 +269,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/create/expense" method="POST"> <!--FILL IN ADD EXPENSE POST ROUTE-->
+        <form action="/create/task" method="POST"> <!--FILL IN ADD EXPENSE POST ROUTE-->
           <div class="form-group">
             <input type="text" name="name" class="form-control" placeholder="Expense name" required>
           </div>
@@ -270,33 +281,21 @@
           </div>
           <div class="form-group"> <!-- PAID BY -->
             <label><b>Paid by: </b></label><br>
-            {{!-- {{ #each user }} --}}
+            {{#each group.people}}
             <label>
-              <input type="checkbox" name="name" class="if-checked"> 
-              Rogerio <!-- name -->
-              <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true">
+              <input type="checkbox" name="paidBy" class="if-checked" value="{{_id}}"> 
+              {{name}}
+              {{!-- <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true"> --}}
             </label>
-            <br>
-            <label>
-              <input type="checkbox" name="name" class="if-checked"> 
-              Helena <!-- name -->
-              <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true">
-            </label>
-            {{!-- {{ /each }} --}}
+            {{/each }}
             <br><label><b>Owed by: </b></label><br>
-            {{!-- {{ #each user }} --}}
+            {{#each group.people}}
             <label>
-              <input type="checkbox" name="name" class="if-checked"> 
-              Rogerio <!-- name -->
-              <input hidden disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" placeholder="Amount owed" required="true" value="<!-- insert total value after divided -->">
+              <input type="checkbox" name="whoOwes" class="if-checked" value="{{_id}}"> 
+              {{name}}
+              {{!-- <input hidden disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" placeholder="Amount owed" required="true" value="<!-- insert total value after divided -->"> --}}
             </label>
-            <br>
-            <label>
-              <input type="checkbox" name="name" class="if-checked"> 
-              Helena <!-- name -->
-              <input hidden disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" placeholder="Amount owed" required="true" value="<!-- insert total value after divided -->">
-            </label>
-            {{!-- {{ /each }} --}}
+            {{/each }}
           </div>
           <button type="submit" class="btn btn-success">Add</button>
         </form>
@@ -321,7 +320,7 @@
       <div class="modal-body">
         <form action="/edit/expense" method="POST"> <!--FILL IN ADD EXPENSE POST ROUTE-->
           <div class="form-group">
-            <input disabled type="text" name="name" class="form-control" value="expense name">
+            <input disabled type="text" name="name" class="form-control" value="">
           </div>
           <div class="form-group">
             <input disabled type="text" name="value" class="form-control" value="total value">
@@ -331,12 +330,7 @@
           </div>
           <div class="form-group"> <!-- PAID BY -->
             <label><b>Paid by: </b></label><br>
-            {{!-- {{ #each user }} --}}
-            <label> 
-              Rogerio <!-- name -->
-              <input disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" value="">
-            </label>
-            {{!-- {{ /each }} --}}
+              <input disabled type="Text" name="amountPaid" class="form-control amount-paid mb-2" value="{{name}}">
             <br><label><b>Owed by: </b></label><br>
             {{!-- {{ #each user }} --}}
             <label> 

@@ -170,7 +170,8 @@ router.post('/signup/:groupId', ensureLoggedOut(), uploadCloud.single('avatar'),
     
         newUser.save()
           .then((usr) => {
-            Group.findByIdAndUpdate(groupId, { $push: { people: usr.username } })
+            console.log(usr);
+            Group.findByIdAndUpdate(groupId, { $push: { people: usr._id } })
               .then((grp) => {
                 console.log(grp);
                 res.redirect('/');

@@ -1,8 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('IronGenerator JS imported successfully!');
-}, false);
-
-
 // ------------------INVITING ROOMMATES-------------------//
 
 const inviteButton = document.getElementById('add-roommate');
@@ -10,7 +5,7 @@ const inviteButton = document.getElementById('add-roommate');
 inviteButton.onclick = () => {
   inviteButton.insertAdjacentHTML('beforebegin', `
   <div class="form-group form-invite">
-    <input type="email" name="email" class="form-control" placeholder="Roomate email">
+    <input type="email" name="people" class="form-control" placeholder="Roomate email">
     <button type="button" class="btn btn-danger remove-btn">Cancel</button>
   </div>
   `);

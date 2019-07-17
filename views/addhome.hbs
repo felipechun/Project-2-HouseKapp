@@ -8,9 +8,10 @@
 <div class="container mb-4 mt-3">
   <div class="row h-100">
     <div class="col-lg-6 col-md-9 col-sm-12 my-auto">
-      <form action="/add-home" method="POST"> <!--FILL IN ADD HOME POST ROUTE-->
+      <form action="/create/group" method="POST"> <!--FILL IN ADD HOME POST ROUTE-->
         <div class="form-group">
           <input type="text" name="name" class="form-control" placeholder="Home name">
+          <input type="email" name="people" value="{{user.username}}" hidden="true">
         </div>
         <!-- insert new input for a roomate -->
         <button type="button" id="add-roommate" class="btn btn-primary">Invite a roomate</button>

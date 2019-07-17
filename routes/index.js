@@ -14,13 +14,18 @@ router.get('/', (req, res, next) => {
 
 router.get('/dashboard', ensureLoggedIn(), (req, res) => {
   const { groupId, _id } = req.user;
-  User.findById(_id)
-    .populate('tasks')
-    .then((user) => {
-      Group.findById(groupId)
-        .populate('people')
-        .then((group) => {
-          res.render('dashboard', { user, group });
+  Group.findById(groupId)
+    .populate('people')
+    .then((group) => {
+      User.find({ groupId })
+        .populate('tasks')
+        .then((users) => {
+          Task.find({ originGroup: groupId })
+            .populate('paidBy whoOwes')
+            .then((tasks) => {
+              res.render('dashboard', { group, users, tasks });
+            })
+            .catch(e => console.log(e));
         })
         .catch(err => console.log(err));
     })
@@ -28,7 +33,12 @@ router.get('/dashboard', ensureLoggedIn(), (req, res) => {
 });
 
 router.get('/create/group/', (req, res) => {
-  res.render('createGroup');
+  User.findById(req.user._id)
+    .then((user) => {
+      console.log(user);
+      res.render('addHome', { user });
+    })
+    .catch(e => console.log(e));
 });
 
 router.post('/create/group', ensureLoggedIn(), (req, res) => {
@@ -37,7 +47,8 @@ router.post('/create/group', ensureLoggedIn(), (req, res) => {
 
   newGroup.save()
     .then((group) => {
-      // console.log(newGroup);
+      console.log(group);
+      console.log(people);
       // Faz update do usuário que originou o request para adicioná-lo ao grupo que criou
       people.map((person) => {
         User.findOneAndUpdate({ username: person }, { groupName: group.name, groupId: group._id })
@@ -47,11 +58,7 @@ router.post('/create/group', ensureLoggedIn(), (req, res) => {
             } else {
               Group.findByIdAndUpdate(newGroup._id, { $push: { people: user._id } })
                 .then(() => {
-                  Group.findByIdAndUpdate(newGroup._id, { $push: { people: req.user._id} })
-                    .then(() => {
-                      res.redirect('/dashboard');
-                    })
-                    .catch(e => console.log(e));
+                  res.redirect('/dashboard');
                 })
                 .catch(err => console.log(err));
             }})
@@ -79,61 +86,58 @@ router.post('/create/task', (req, res) => {
     whoOwes,
   } = req.body;
 
+  const originGroup = req.user.groupId;
+
   // whoOwes E paidBy RECEBEM COMO VALUE O GROUP.PEOPLE._ID NO FRONT
 
-  const newTask = new Task({ name, date, value });
+  const newTask = new Task({ name, date, value, originGroup });
 
   newTask.save()
     .then((task) => {
-      if (typeof paidBy === 'object') {
-        paidBy.map((payerId) => {
-          Task.findByIdAndUpdate(newTask._id, { $push: { paidBy: payerId } })
+      const pr1 = (typeof paidBy) === 'object'
+        ? paidBy.map((payer) => {
+          Task.findByIdAndUpdate(newTask._id, { $push: { paidBy: payer } })
             .then(() => {
-              User.findByIdAndUpdate(payerId, { $push: { tasks: task._id } });
+              User.findByIdAndUpdate(payer, { $push: { tasks: task._id } })
+                .then(x => x)
+                .catch(e => console.log(e));
             })
             .catch((e) => console.log(e));
-        });
-      } else {
-        Task.findByIdAndUpdate(newTask._id, { $push: { paidBy } })
-          .then(() => {
-            User.findByIdAndUpdate(payerId, { $push: { tasks: task._id } });
+        })
+        : Task.findByIdAndUpdate(newTask._id, { $push: { paidBy } })
+          .then((payer) => {
+            User.findByIdAndUpdate(paidBy, { $push: { tasks: task._id } })
+              .then(x => x)
+              .catch(e => console.log(e));
           })
           .catch(e => console.log(e));
-      }
 
-      if (typeof whoOwes === 'object') {
-        whoOwes.map((oweId) => {
-          Task.findByIdAndUpdate(newTask._id, { $push: { whoOwes: oweId }})
+      const pr2 = (typeof whoOwes === 'object')
+        ? whoOwes.map((owes) => {
+          Task.findByIdAndUpdate(newTask._id, { $push: { whoOwes: owes }})
             .then(() => {
-              User.findByIdAndUpdate(payerId, { $push: { tasks: task._id } });
+              User.findByIdAndUpdate(owes, { $push: { tasks: task._id } })
+                .then(x => x)
+                .catch(e => console.log(e));
             })
             .catch((e) => console.log(e));
-        });
-      } else {
-        Task.findByIdAndUpdate(newTask._id, { $push: { whoOwes }})
-          .then(() => {
-            User.findByIdAndUpdate(payerId, { $push: { tasks: task._id } });
+        })
+        : Task.findByIdAndUpdate(newTask._id, { $push: { whoOwes }})
+          .then((owes) => {
+            User.findByIdAndUpdate(whoOwes, { $push: { tasks: task._id } })
+              .then(x => x)
+              .catch(e => console.log(e));
           })
           .catch(e => console.log(e));
-      }
+
+
+      Promise.all([pr1, pr2])
+        .then(() => {
+          res.redirect('/dashboard');
+        })
+        .catch(err => console.log(err));
     })
     .catch(err => console.log(err));
-
-  // if (task.value <= 0) {
-  //   User.findByIdAndUpdate({ _id: req.user._id },
-  //     { $push: { tasks: newTask._id } })
-  //     .then((user) => {
-  //       res.redirect('/dashboard');
-  //     })
-  //     .catch(err => console.log(err));
-  // } else {
-  //   User.findByIdAndUpdate({ _id: req.user._id },
-  //     { $push: { expenses: newTask._id } })
-  //     .then((user) => {
-  //       res.redirect('/dashboard');
-  //     })
-  //     .catch(err => console.log(err));
-  // }
 });
 
 router.get('/edit/group/:groupId', (req, res) => {
@@ -165,9 +169,10 @@ router.get('/edit/task/:taskId', (req, res) => {
   Task.findById(taskId)
     .populate('whoOwes paidBy')
     .then((task) => {
-      const evenSplit = task.value / (task.whoOwes.length + task.paidBy.length);
-      const roundEvenSplit = evenSplit.toFixed(2);
-      res.render('editTask', { task, roundEvenSplit });
+      console.log(task);
+      // const evenSplit = task.value / (task.whoOwes.length + task.paidBy.length);
+      // const roundEvenSplit = evenSplit.toFixed(2);
+      res.render('editTask', { task });
     })
     .catch(e => console.log(e));
 });

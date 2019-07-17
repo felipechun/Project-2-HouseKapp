@@ -4,8 +4,9 @@ const { Schema } = mongoose;
 
 const taskSchema = new Schema({
   name: String,
-  date: Schema.Types.Date,
+  date: String,
   value: { type: Number, default: 0 },
+  originGroup: { type: Schema.Types.ObjectId, ref: 'Group' },
   paidBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   whoOwes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   completed: { type: Boolean, default: false },
