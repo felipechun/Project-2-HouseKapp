@@ -119,12 +119,16 @@ router.post('/create/task', (req, res) => {
   const originGroup = req.user.groupId;
   if (amountPaid > 0) {
     const amountDue = value - amountPaid;
-    newTask = new Task({ name, date, value, amountPaid, amountDue, originGroup });
+    newTask = new Task({ name, date, value, amountPaid, amountDue, originGroup, completed: false });
   } else {
-    newTask = new Task({ name, date, value, amountPaid, originGroup });
+    newTask = new Task({ name, date, value, amountPaid, originGroup, completed: false });
   }
 
-  // whoOwes E paidBy RECEBEM COMO VALUE O GROUP.PEOPLE._ID NO FRONT
+  if (amountPaid === value) {
+    newTask.completed = true;
+  } else {
+    newTask.completed = false;
+  }
 
   newTask.save()
     .then((task) => {
