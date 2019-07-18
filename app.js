@@ -9,10 +9,10 @@ const path         = require('path');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+
 const bcrypt = require('bcrypt');
 const MongoStore = require('connect-mongo')(session);
 const User = require('./models/User');
-const Task = require('./models/Task');
 
 mongoose
   .connect('mongodb://localhost/housekapp', {useNewUrlParser: true})

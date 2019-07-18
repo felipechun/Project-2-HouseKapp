@@ -38,6 +38,7 @@
       <div class="col-sm-12 col-md-6 col-lg-4 pb-3">
         <div class="card">
           <div class="card-body">
+            <img class="card-title mx-auto d-block profile-img" src="{{imgPath}}" alt="profile picture">
             <h5 class="card-title font-weight-bold text-center">{{name}}</h5>
               {{#each tasks}}
               {{#unless value}}
@@ -298,9 +299,6 @@
     </div>
   </div>
 </div>
-
-
-
 
 <!--Add Task Modal -->
 <div class="modal fade" id="add-task-modal" tabindex="-1" role="dialog"   aria-labelledby="exampleModalLabel" aria-hidden="true">

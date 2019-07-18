@@ -28,7 +28,7 @@ router.post('/signup', ensureLoggedOut(), uploadCloud.single('avatar'), (req, re
   let imgName = 'no_image';
 
   if (req.file !== undefined) {
-    imgPath = req.file.path;
+    imgPath = req.file.secure_url;
     imgName = req.file.originalname;
   }
 
@@ -87,11 +87,11 @@ router.post('/signup', ensureLoggedOut(), uploadCloud.single('avatar'), (req, re
 router.post('/signup/:groupId', ensureLoggedOut(), uploadCloud.single('avatar'), (req, res) => {
   const { username, name, password, confirmPassword, groupId } = req.body;
 
-  let imgPath = 'https://image.flaticon.com/icons/png/128/16/16467.png';
+  let imgPath = 'images/default-profile.png';
   let imgName = 'no_image';
 
   if (req.file !== undefined) {
-    imgPath = req.file.path;
+    imgPath = req.file.secure_url;
     imgName = req.file.originalname;
   }
 
@@ -174,6 +174,8 @@ router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
+
+// Social Login - GOOGLE
 
 // Criar rota de verificação de email (EXTRA)
 
