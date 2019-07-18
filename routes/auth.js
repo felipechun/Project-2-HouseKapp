@@ -97,18 +97,18 @@ router.post('/signup/:groupId', ensureLoggedOut(), uploadCloud.single('avatar'),
 
   // Check validity
   if (username === '' || password === '') {
-    res.render('auth/signup', { message: 'Indicate username and password' });
+    res.render('auth/invite-signup', { message: 'Indicate username and password' });
     return;
   }
 
   if (password !== confirmPassword) {
-    res.render('auth/signup', { message: 'Passwords don\'t match' });
+    res.render('auth/invite-signup', { message: 'Passwords don\'t match' });
     return;
   }
 
   User.findOne({ username }, 'email', (err, user) => {
     if (user !== null) {
-      res.render('auth/signup', { message: 'This email is already in use' });
+      res.render('auth/invite-signup', { message: 'This email is already in use' });
       return;
     }
 
@@ -153,20 +153,20 @@ router.post('/signup/:groupId', ensureLoggedOut(), uploadCloud.single('avatar'),
           })
           .catch((e) => {
             console.log(e);
-            res.render('auth/signup', { message: 'Something went wrong' });
+            res.render('auth/invite-signup', { message: 'Something went wrong' });
           });
       })
       .catch(error => console.log(error));
   });
 });
 
-router.get('/login', ensureLoggedOut(), (req, res) => {
-  res.render('auth/login');
-});
+// router.get('/login', ensureLoggedOut(), (req, res) => {
+//   res.render('auth/login');
+// });
 
 router.post('/login', passport.authenticate('local', {
   successReturnToOrRedirect: '/dashboard',
-  failureRedirect: '/login',
+  failureRedirect: '/',
   passReqToCallback: true,
 }));
 

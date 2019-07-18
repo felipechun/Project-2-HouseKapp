@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 router.get('/dashboard', ensureLoggedIn(), (req, res) => {
   if (!req.user.groupId) {
     const { user } = req;
-    res.render('addHome', { user });
+    res.render('addhome', { user });
   } else {
     const { groupId } = req.user;
     const loggedUser = req.user;
@@ -224,53 +224,13 @@ router.post('/edit/group/:groupId', (req, res) => {
     .then(() => res.redirect('/dashboard'))
     .catch(error => console.log(error));
 
-  // if (typeof people === 'object') {
-  //   Group.findOne({ groupId })
-  //     .then((group) => {
-  //       people.map((person) => {
-  //         User.findOneAndUpdate({ username: person }, { groupId })
-  //           .then((user) => {
-  //             if (user === null) {
-  //               inviteUser(req.user.name, person, groupId);
-  //             } else {
-  //               Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
-  //                 .then(() => {
-  //                   res.redirect('/dashboard');
-  //                 })
-  //                 .catch(err => console.log(err));
-  //             }})
-  //           .catch(e => console.log(e));
-  //       })
-  //         .catch(err => console.log(err));
-  //     });
-  // } else {
-  //   Group.findOne({ groupId })
-  //     .then((group) => {
-  //       User.findOneAndUpdate({ username: people }, { groupId })
-  //         .then((user) => {
-  //           if (user === null) {
-  //             inviteUser(req.user.name, people, groupId);
-  //           } else {
-  //             Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
-  //               .then(() => {
-  //                 res.redirect('/dashboard');
-  //               })
-  //               .catch(err => console.log(err));
-  //           }})
-  //         .catch(e => console.log(e));
-  //     })
-  //     .catch(e => console.log(e));
-  // }
 });
 
-// Edit tem que atualizar valores, dar check/ adicionar pessoas e concluir
 router.get('/edit/task/:taskId', ensureLoggedIn(), (req, res) => {
   const { taskId } = req.params;
   Task.findById(taskId)
     .populate('whoOwes paidBy')
     .then((task) => {
-      // const evenSplit = task.value / (task.whoOwes.length + task.paidBy.length);
-      // const roundEvenSplit = evenSplit.toFixed(2);
       res.render('editTask', { task });
     })
     .catch(e => console.log(e));
