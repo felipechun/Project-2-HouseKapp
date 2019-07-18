@@ -22,31 +22,32 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item"> <!-- DASHBOARD -->
-        <button type="button" class="btn">
-          <a class="text-dark text-decoration-none" href="/dashboard">My Home</a>
-        </button>
-      </li>
       <!-- Add condition for LOGOUT -->
-      {{!-- {{ #if logged out }}
-      {{ /if }}
-      <li class="nav-item"> <!-- LOGOUT -->
-        <button type="button" class="btn">
-          <a class="text-dark text-decoration-none" href="/dashboard">Logout</a>
-        </button>
-      </li> --}}
-      <li class="nav-item">
-        <!-- Sign up button trigger modal -->
-        <button type="button" class="btn" data-toggle="modal" data-target="#signup-modal">
-        Sign up
-        </button>      
-      </li>
-      <li class="nav-item">
-        <!-- Log in button trigger modal -->
-        <button type="button" class="btn" data-toggle="modal" data-target="#login-modal">
-        Log in
-        </button>
-      </li>
+      {{#if users}}
+        <li class="nav-item"> <!-- DASHBOARD -->
+          <button type="button" class="btn">
+            <a class="text-dark text-decoration-none" href="/dashboard">My Home</a>
+          </button>
+        </li>
+        <li class="nav-item"> <!-- LOGOUT -->
+          <button type="button" class="btn">
+            <a class="text-dark text-decoration-none" href="/logout">Logout</a>
+          </button>
+        </li>
+      {{else}}
+        <li class="nav-item">
+          <!-- Sign up button trigger modal -->
+          <button type="button" class="btn" data-toggle="modal" data-target="#signup-modal">
+          Sign up
+          </button>      
+        </li>
+        <li class="nav-item">
+          <!-- Log in button trigger modal -->
+          <button type="button" class="btn" data-toggle="modal" data-target="#login-modal">
+          Log in
+          </button>
+        </li>
+      {{/if}}
     </ul>
   </div>
 </nav>
@@ -111,7 +112,7 @@
 </div>
 
   {{{body}}}
-<footer class="navbar the-nav-color">
+<footer class="navbar the-nav-color fixed-bottom">
   <a class="navbar-item nav-link the-nav-color">contact@housekapp.com</a>
   <a class="navbar-item the-nav-color">Copyright 2019. All rights reserved</a>
 </footer>
