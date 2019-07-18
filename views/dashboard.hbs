@@ -91,71 +91,6 @@
           </h3>
           {{#each tasks}}
             {{#if value}}
-<<<<<<< HEAD
-            {{#unless completed}}
-            <div class="row">
-              <div class="col-md-3 col-xs-12 text-left">
-                <a class="card-text">{{name}}</a>
-                <button class="btn border-none" data-toggle="modal" data-target="#edit-expense-modal">
-                  <img class="icons" src="images/checkmark-icon.png" alt="nope" id-attr="{{_id}}"> 
-                </button>
-              </div>
-              <div class="col-md-2 col-xs-12 text-left">
-                <a class="card-text text-muted text-right">Amount: ${{value}}</a>
-              </div>
-              <div class="col-md-2 col-xs-12 text-left">
-                Paid: 
-                <a class="card-text text-muted text-right">
-                  {{#each paidBy}}
-                  {{name}} | 
-                  {{/each }}
-                </a>
-              </div>             
-              <div class="col-md-3 col-xs-12 text-left">
-                Owes: 
-                <a class="card-text text-muted text-right">
-              {{#each whoOwes}}
-                {{name}} | 
-              {{/each}}
-                   </a>
-              </div>
-              <div class="col-md-2 col-xs-12 text-left">
-                <a class="card-text text-muted text-right">{{date}}</a>
-              </div>
-              <form action="/delete/task/{{_id}}" method="post">
-                <input type="submit" value="delete">
-              </form>
-||||||| merged common ancestors
-            <div class="row">
-              <div class="col-md-3 col-xs-12 text-left">
-                <a class="card-text">{{name}}</a>
-                <button class="btn border-none" data-toggle="modal" data-target="#edit-expense-modal">
-                  <img class="icons" src="images/checkmark-icon.png" alt="nope" id-attr="{{_id}}"> 
-                </button>
-              </div>
-              <div class="col-md-2 col-xs-12 text-left">
-                <a class="card-text text-muted text-right">Amount: ${{value}}</a>
-              </div>
-              <div class="col-md-2 col-xs-12 text-left">
-                Paid: 
-                <a class="card-text text-muted text-right">
-                  {{#each paidBy}}
-                  {{name}} | 
-                  {{/each }}
-                </a>
-              </div>             
-              <div class="col-md-3 col-xs-12 text-left">
-                Owes: 
-                <a class="card-text text-muted text-right">
-              {{#each whoOwes}}
-                {{name}} | 
-              {{/each}}
-                   </a>
-              </div>
-              <div class="col-md-2 col-xs-12 text-left">
-                <a class="card-text text-muted text-right">{{date}}</a>
-              </div>
-=======
             <div class="card mb-3">
               <div class="card-body">
                 <div class="row">
@@ -224,7 +159,6 @@
                   </div>
                 </div>
               </form>
->>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
             </div>
             {{/unless}}
             {{/if}}
@@ -277,32 +211,13 @@
       <div class="modal-body">
         <form action="/edit-home" method="POST"> <!--FILL IN EDIT HOME POST ROUTE-->
           <div class="form-group">
-<<<<<<< HEAD
-            <input type="text" name="name" class="form-control" value="{{group.name}}">
-||||||| merged common ancestors
-            <input type="text" name="name" class="form-control" value="<!-- Home name -->">
-=======
             <div class="input-group">
               <input type="text" name="name" class="form-control" value="{{group.people.[0].groupName}}">
               <div class="input-group-append">
                 <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure? This cannot be undone.');">Delete</button>
               </div>
             </div>
->>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
           </div>
-<<<<<<< HEAD
-          {{#each users}}
-        <div class="form-group">
-            <input disabled type="text" name="name" class="form-control" value="{{name}}">
-            <form action="/delete/userfromgroup/{{_id}}" method="post">
-              <input type="submit" value="Remove">
-            </form>
-||||||| merged common ancestors
-          {{!-- {{ #each name }} --}}
-        <div class="form-group">
-            <input disabled type="text" name="name" class="form-control" value="<!-- name -->">
-            <button class="btn btn-sm btn-danger">Remove</button>
-=======
           {{#each group.people}}
           <div class="form-group">
             <div class="input-group mb-3">
@@ -311,15 +226,8 @@
                 <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure? This cannot be undone.');">Remove</button>
               </div>
             </div>
->>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
           </div>
-<<<<<<< HEAD
-        {{/each }}
-||||||| merged common ancestors
-        {{!-- {{ /each }} --}}
-=======
         {{/each}}
->>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
         <!-- insert new input for a roomate -->
           <button type="button" id="add-roommate" class="btn btn-primary">Invite a roomate</button>
           <button type="submit" class="btn btn-success">Edit</button>
@@ -437,12 +345,6 @@
               {{!-- <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true"> --}}
             </label>
             {{/each }}
-<<<<<<< HEAD
-            <input type="number" step="0.01" name="amountPaid" placeholder="Amount Paid">
-            <br><label><b>Owed by: </b></label><br>
-||||||| merged common ancestors
-            <br><label><b>Owed by: </b></label><br>
-=======
             <div class="form-group">
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -452,7 +354,6 @@
               </div>
             </div>
             <label><b>Owed by: </b></label><br>
->>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
             {{#each group.people}}
             <label>
               <input type="checkbox" name="whoOwes" class="if-checked" value="{{_id}}"> 
