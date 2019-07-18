@@ -4,9 +4,11 @@ const inviteButton = document.getElementById('add-roommate');
 
 inviteButton.onclick = () => {
   inviteButton.insertAdjacentHTML('beforebegin', `
-  <div class="form-group form-invite">
+  <div class="input-group input-group-sm form-invite mb-3">
     <input type="email" name="people" class="form-control" placeholder="Roomate email">
-    <button type="button" class="btn btn-danger remove-btn">Cancel</button>
+    <div class="input-group-append">
+      <button type="button" class="btn btn-danger remove-btn">Cancel</button>
+    </div>
   </div>
   `);
 

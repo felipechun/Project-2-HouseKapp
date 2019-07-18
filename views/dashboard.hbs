@@ -44,7 +44,7 @@
               <!-- have to insert unique task id to toggle individual buttons -->
               <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons{{_id}}{{../_id}}"> 
                 <p>{{name}}</p>
-                <p>{{date}}</p>
+                <p class="text-white-50">{{date}}</p>
               </button>
               <div id="task-icons{{_id}}{{../_id}}" class="collapse"> <!-- TASK ICONS -->
                 <div class="container-fluid">
@@ -60,7 +60,7 @@
                       </button>
                     </div>
                     <div id="task-check" class="col-4 text-center"> <!-- DELETE -->
-                      <button class="btn btn-outline-danger pl-4 pr-4">
+                      <button class="btn btn-outline-danger pl-4 pr-4" onclick="return confirm('Are you sure? This cannot be undone.');">
                         <img class="icons" src="images/minus-icon.png" alt="nope"> 
                       </button>
                     </div>
@@ -79,7 +79,7 @@
 
 
 {{!-- ALL TASKS AND EXPENSES COLLUMNS --}}
-<div class="container mb-5">
+<div class="container big-container">
   <div class="row h-100 mb-3">
     <div class="col-lg-12 col-sm-12 my-auto"> <!-- Expenses -->
       <div class="card">
@@ -91,6 +91,7 @@
           </h3>
           {{#each tasks}}
             {{#if value}}
+<<<<<<< HEAD
             {{#unless completed}}
             <div class="row">
               <div class="col-md-3 col-xs-12 text-left">
@@ -124,6 +125,106 @@
               <form action="/delete/task/{{_id}}" method="post">
                 <input type="submit" value="delete">
               </form>
+||||||| merged common ancestors
+            <div class="row">
+              <div class="col-md-3 col-xs-12 text-left">
+                <a class="card-text">{{name}}</a>
+                <button class="btn border-none" data-toggle="modal" data-target="#edit-expense-modal">
+                  <img class="icons" src="images/checkmark-icon.png" alt="nope" id-attr="{{_id}}"> 
+                </button>
+              </div>
+              <div class="col-md-2 col-xs-12 text-left">
+                <a class="card-text text-muted text-right">Amount: ${{value}}</a>
+              </div>
+              <div class="col-md-2 col-xs-12 text-left">
+                Paid: 
+                <a class="card-text text-muted text-right">
+                  {{#each paidBy}}
+                  {{name}} | 
+                  {{/each }}
+                </a>
+              </div>             
+              <div class="col-md-3 col-xs-12 text-left">
+                Owes: 
+                <a class="card-text text-muted text-right">
+              {{#each whoOwes}}
+                {{name}} | 
+              {{/each}}
+                   </a>
+              </div>
+              <div class="col-md-2 col-xs-12 text-left">
+                <a class="card-text text-muted text-right">{{date}}</a>
+              </div>
+=======
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3 col-xs-12 text-left">
+                    <a class="card-text">{{name}}</a>
+                    <button class="btn border-none" data-toggle="collapse" data-target="#pay-expense{{_id}}">
+                      <img class="icons" src="images/checkmark-icon.png" alt="nope" id-attr="{{_id}}"> 
+                    </button>
+                  </div>
+                  <div class="col-lg-2 col-sm-12 text-left">
+                    <a class="card-text text-muted text-right">Amount: ${{value}}</a>
+                  </div>
+                  <div class="col-lg-2 col-sm-12 text-left">
+                    <label class="text-muted">Paid:&nbsp;</label>
+                    <a class="card-text text-muted text-right">
+                      {{#each paidBy}}
+                      {{name}}&nbsp; 
+                      {{/each }}
+                    </a>
+                  </div>             
+                  <div class="col-lg-3 col-sm-12 text-left">
+                    <label class="text-muted">Owes:&nbsp;</label> 
+                    <a class="card-text text-muted text-right">
+                  {{#each whoOwes}}
+                    {{name}}&nbsp; 
+                  {{/each}}
+                      </a>
+                  </div>
+                  <div class="col-lg-2 col-sm-12 text-left">
+                    <a class="card-text text-muted text-right">{{date}}</a>
+                  </div>
+                </div>
+              </div>  
+            </div>
+            <div id="pay-expense{{_id}}" class="collapse mb-3"> <!-- EXPENSE COLLAPSE -->
+              <form action="/edit/task/{{_id}}" method="POST">
+                <div class="container-fluid">
+                  <div id="" class="row mt-2">
+                    <div id="" class="col-lg-3 col-sm-12 text-left"> <!-- PAID -->
+                      <label>Paid: </label>
+                      {{#each paidBy}}
+                          <span>{{name}}&nbsp;</span>
+                      {{/each}}
+                    </div>
+                    <div id="" class="col-lg-3 col-sm-12 text-left"> <!-- AMOUNT DUE -->
+                      <label>Amount Due: {{amountDue}}</label>  
+                    </div>
+                    <div id="" class="col-lg-3 col-sm-12 text-left"> <!-- OWES -->
+                      <label>Owes:&nbsp;</label>
+                      {{#each whoOwes}}
+                        <input type="radio" name="paidBy" value="{{_id}}">
+                        <label>&nbsp;{{name}}&nbsp;</label>
+                      {{/each}}
+                    </div>
+                    <div class="col-lg-3 col-sm-12" id="pay-div">
+                      <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">$</span>
+                        </div>
+                        <input class="input-group form-control" type="number" name="amountPaid" step="0.01" placeholder="How much to pay">
+                        <div class="input-group-append">
+                          <button class="btn btn-sm btn-outline-success" type="submit">Pay</button>
+                        </div>  
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+>>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
             </div>
             {{/unless}}
             {{/if}}
@@ -176,16 +277,49 @@
       <div class="modal-body">
         <form action="/edit-home" method="POST"> <!--FILL IN EDIT HOME POST ROUTE-->
           <div class="form-group">
+<<<<<<< HEAD
             <input type="text" name="name" class="form-control" value="{{group.name}}">
+||||||| merged common ancestors
+            <input type="text" name="name" class="form-control" value="<!-- Home name -->">
+=======
+            <div class="input-group">
+              <input type="text" name="name" class="form-control" value="{{group.people.[0].groupName}}">
+              <div class="input-group-append">
+                <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure? This cannot be undone.');">Delete</button>
+              </div>
+            </div>
+>>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
           </div>
+<<<<<<< HEAD
           {{#each users}}
         <div class="form-group">
             <input disabled type="text" name="name" class="form-control" value="{{name}}">
             <form action="/delete/userfromgroup/{{_id}}" method="post">
               <input type="submit" value="Remove">
             </form>
+||||||| merged common ancestors
+          {{!-- {{ #each name }} --}}
+        <div class="form-group">
+            <input disabled type="text" name="name" class="form-control" value="<!-- name -->">
+            <button class="btn btn-sm btn-danger">Remove</button>
+=======
+          {{#each group.people}}
+          <div class="form-group">
+            <div class="input-group mb-3">
+              <input disabled type="text" name="name" class="form-control" value="{{name}}">
+              <div class="input-group-append">
+                <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure? This cannot be undone.');">Remove</button>
+              </div>
+            </div>
+>>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
           </div>
+<<<<<<< HEAD
         {{/each }}
+||||||| merged common ancestors
+        {{!-- {{ /each }} --}}
+=======
+        {{/each}}
+>>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
         <!-- insert new input for a roomate -->
           <button type="button" id="add-roommate" class="btn btn-primary">Invite a roomate</button>
           <button type="submit" class="btn btn-success">Edit</button>
@@ -254,10 +388,9 @@
           <div id="who-id" class="form-group">
             <label>Who is this for? </label>
             <select class="form-control" name="paidBy">
-              {{!-- {{ #each user}} --}}
-              <option name="whoOwes" value="name of user">name of user</option>
-              <option name="whoOwes" value="second-user">second user</option>
-              {{!-- {{ /each }} --}}
+              {{#each group.people}}
+              <option name="whoOwes">{{name}}</option>
+              {{/each}}
             </select>
           </div>
           <button type="submit" class="btn btn-success">Edit</button>
@@ -285,7 +418,12 @@
             <input type="text" name="name" class="form-control" placeholder="Expense name" required>
           </div>
           <div class="form-group">
-            <input type="text" name="value" class="form-control" placeholder="Total value" required>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input type="number" name="value" class="form-control" placeholder="Total value" required>
+            </div>
           </div>
           <div class="form-group">
             <input type="date" name="date" class="form-control" placeholder="Date">
@@ -299,8 +437,22 @@
               {{!-- <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true"> --}}
             </label>
             {{/each }}
+<<<<<<< HEAD
             <input type="number" step="0.01" name="amountPaid" placeholder="Amount Paid">
             <br><label><b>Owed by: </b></label><br>
+||||||| merged common ancestors
+            <br><label><b>Owed by: </b></label><br>
+=======
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <input type="number" name="amountPaid" class="form-control" placeholder="Amount Paid" required>
+              </div>
+            </div>
+            <label><b>Owed by: </b></label><br>
+>>>>>>> f59517bd57e995abf1e7d3a4c5fbd1c846546c4b
             {{#each group.people}}
             <label>
               <input type="checkbox" name="whoOwes" class="if-checked" value="{{_id}}"> 
@@ -320,7 +472,7 @@
 
 
 <!--Pay Expense Modal -->
-<div class="modal fade" id="edit-expense-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{{!-- <div class="modal fade" id="edit-expense-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-light border-0">
@@ -345,13 +497,13 @@
               <input disabled type="Text" name="amountPaid" class="form-control amount-paid mb-2" value="{{name}}">
             <br><label><b>Owed by: </b></label><br>
             {{!-- {{ #each user }} --}}
-            <label> 
+            {{!-- <label> 
               Rogerio <!-- name -->
               <input disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" value="<!-- insert total value after divided -->">
             </label>
             <br>
             {{!-- {{ /each }} --}}
-          </div>
+          {{!-- </div>
           <button type="submit" class="btn btn-success">Edit</button>
         </form>
       </div>
@@ -359,14 +511,6 @@
   </div>
 </div>
 
-{{!-- add expense
-name,
-date,
-value,
-paidBy, -> array de pessoas
-whoOwes, -> array de pessoas
-
-colocar opcoes de split bill --}}
 
 
 {{!-- Emmet abreviation div.box>h3+p*3{ola mundo} --}}
