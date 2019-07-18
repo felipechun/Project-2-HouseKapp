@@ -1,6 +1,6 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
 const { ensureLoggedIn } = require('connect-ensure-login');
-const uploadCloud = require('../config/cloudinary.js');
 const User = require('../models/User');
 const Task = require('../models/Task');
 const Group = require('../models/Group');
@@ -8,35 +8,44 @@ const inviteUser = require('../helpers/emails.js');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
   res.render('index');
 });
 
 router.get('/dashboard', ensureLoggedIn(), (req, res) => {
-  const { groupId, _id } = req.user;
-  Group.findById(groupId)
-    .populate('people')
-    .then((group) => {
-      User.find({ groupId })
-        .populate('tasks')
-        .then((users) => {
-          Task.find({ originGroup: groupId })
-            .populate('paidBy whoOwes')
-            .then((tasks) => {
-              res.render('dashboard', { group, users, tasks });
-            })
-            .catch(e => console.log(e));
-        })
-        .catch(err => console.log(err));
-    })
-    .catch(err => console.log(err));
+  if (!req.user.groupId) {
+    const { user } = req;
+    res.render('addHome', { user });
+  } else {
+    const { groupId } = req.user;
+    const loggedUser = req.user;
+    Group.findById(groupId)
+      .populate('people')
+      .then((group) => {
+        User.find({ groupId })
+          .populate('tasks')
+          .then((users) => {
+            Task.find({ originGroup: groupId })
+              .populate('paidBy whoOwes')
+              .then((tasks) => {
+                res.render('dashboard', { group, users, tasks, loggedUser });
+              })
+              .catch(e => console.log(e));
+          })
+          .catch(err => console.log(err));
+      })
+      .catch(err => console.log(err));
+  }
 });
 
-router.get('/create/group/', (req, res) => {
+router.get('/create/group/', ensureLoggedIn(), (req, res) => {
   User.findById(req.user._id)
     .then((user) => {
-      console.log(user);
-      res.render('addHome', { user });
+      if (user.groupId) {
+        res.redirect('/dashboard');
+      } else {
+        res.render('addHome', { user });
+      }
     })
     .catch(e => console.log(e));
 });
@@ -47,28 +56,27 @@ router.post('/create/group', ensureLoggedIn(), (req, res) => {
 
   newGroup.save()
     .then((group) => {
-      console.log(group);
-      console.log(people);
       // Faz update do usuário que originou o request para adicioná-lo ao grupo que criou
       people.map((person) => {
-        User.findOneAndUpdate({ username: person }, { groupName: group.name, groupId: group._id })
+        User.findOneAndUpdate({ username: person }, { groupId: group._id })
           .then((user) => {
             if (user === null) {
               inviteUser(req.user.name, person, group._id);
+              res.redirect('/dashboard');
             } else {
               Group.findByIdAndUpdate(newGroup._id, { $push: { people: user._id } })
                 .then(() => {
                   res.redirect('/dashboard');
                 })
                 .catch(err => console.log(err));
-            }})
+            } })
           .catch(e => console.log(e));
       });
     })
     .catch(err => console.log(err));
 });
 
-router.get('/create/task', (req, res) => {
+router.get('/create/task', ensureLoggedIn(), (req, res) => {
   Group.findById(req.user.groupId)
     .populate('people')
     .then((group) => {
@@ -82,15 +90,22 @@ router.post('/create/task', (req, res) => {
     name,
     date,
     value,
+    amountPaid,
     paidBy,
     whoOwes,
   } = req.body;
 
+  let newTask = {};
+
   const originGroup = req.user.groupId;
+  if (amountPaid > 0) {
+    const amountDue = value - amountPaid;
+    newTask = new Task({ name, date, value, amountPaid, amountDue, originGroup });
+  } else {
+    newTask = new Task({ name, date, value, amountPaid, originGroup });
+  }
 
   // whoOwes E paidBy RECEBEM COMO VALUE O GROUP.PEOPLE._ID NO FRONT
-
-  const newTask = new Task({ name, date, value, originGroup });
 
   newTask.save()
     .then((task) => {
@@ -140,10 +155,10 @@ router.post('/create/task', (req, res) => {
     .catch(err => console.log(err));
 });
 
-router.get('/edit/group/:groupId', (req, res) => {
+router.get('/edit/group/:groupId', ensureLoggedIn(), (req, res) => {
   const { groupId } = req.params;
   Group.findById(groupId)
-    .populate('people', 'name')
+    .populate('people')
     .then((group) => {
       res.render('editGroup', { group });
     })
@@ -153,23 +168,52 @@ router.get('/edit/group/:groupId', (req, res) => {
 router.post('/edit/group/:groupId', (req, res) => {
   const { groupId } = req.params;
   const { name, people } = req.body;
-  User.findOne({ username: people })
-    .then((user) => {
-      Group.findByIdAndUpdate(groupId, { name, $push: { people: user._id } })
-        .then(() => {
-          res.redirect('/dashboard');
+
+  if (typeof people === 'object') {
+    Group.findOne({ groupId })
+      .then((group) => {
+        people.map((person) => {
+          User.findOneAndUpdate({ username: person }, { groupId })
+            .then((user) => {
+              if (user === null) {
+                inviteUser(req.user.name, person, groupId);
+              } else {
+                Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
+                  .then(() => {
+                    res.redirect('/dashboard');
+                  })
+                  .catch(err => console.log(err));
+              }})
+            .catch(e => console.log(e));
         })
-        .catch(err => console.log(err));
-    });
+          .catch(err => console.log(err));
+      });
+  } else {
+    Group.findOne({ groupId })
+      .then((group) => {
+        User.findOneAndUpdate({ username: people }, { groupId })
+          .then((user) => {
+            if (user === null) {
+              inviteUser(req.user.name, people, groupId);
+            } else {
+              Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
+                .then(() => {
+                  res.redirect('/dashboard');
+                })
+                .catch(err => console.log(err));
+            }})
+          .catch(e => console.log(e));
+      })
+      .catch(e => console.log(e));
+  }
 });
 
 // Edit tem que atualizar valores, dar check/ adicionar pessoas e concluir
-router.get('/edit/task/:taskId', (req, res) => {
+router.get('/edit/task/:taskId', ensureLoggedIn(), (req, res) => {
   const { taskId } = req.params;
   Task.findById(taskId)
     .populate('whoOwes paidBy')
     .then((task) => {
-      console.log(task);
       // const evenSplit = task.value / (task.whoOwes.length + task.paidBy.length);
       // const roundEvenSplit = evenSplit.toFixed(2);
       res.render('editTask', { task });
@@ -178,36 +222,112 @@ router.get('/edit/task/:taskId', (req, res) => {
 });
 
 router.post('/edit/task/:taskId', (req, res) => {
-  const {
+  let {
     name,
     date,
-    value,
-    paidBy,
-    whoOwes,
+    amountPaid,
   } = req.body;
 
-  Task.findByIdAndUpdate(req.params.taskId, {
-    name,
-    date,
-    value,
-    paidBy: { $set: { paidBy } },
-    whoOwes: { $set: { whoOwes } },
-  })
+  // muda status de pagamento
+  const paymentStatusPromise = Task.findById(req.params.taskId)
     .then((task) => {
-      if (task.whoOwes.length === 0) {
-        Task.findByIdAndUpdate(req.params.taskId, { completed: true });
+      const owes = [];
+      let { amountDue } = task;
+      let accAmountPaid = task.amountPaid;
+
+      task.whoOwes.map(user => owes.push(user));
+
+      // tratar o retorno do input
+      amountPaid = parseFloat(amountPaid);
+
+      // req.body.paidBy tem que me dar um id
+
+      if (task.whoOwes.indexOf(req.body.paidBy) !== -1) {
+        if (amountDue) {
+          amountDue -= amountPaid;
+          accAmountPaid += amountPaid;
+        }
+
+        Task.findByIdAndUpdate(task._id,
+          {
+            $push: { paidBy: req.body.paidBy },
+            $pull: { whoOwes: req.body.paidBy },
+            amountDue,
+            amountPaid: accAmountPaid,
+          })
+          .then((tk) => {
+            if (tk.whoOwes.length === 1 || accAmountPaid >= task.value) {
+              Task.findByIdAndUpdate(task._id, { completed: true })
+                .then(f => f)
+                .catch(e => console.log(e));
+            }
+          })
+          .catch(e => console.log(e));
       }
+    })
+    .catch(err => console.log(err));
+
+  // muda nome e data
+  const nameDatePromise = Task.findById(req.params.taskId)
+    .then((task) => {
+      Task.findByIdAndUpdate(task._id, { name, date })
+        .then(x => x)
+        .catch(e => console.log(e));
+    })
+    .catch(err => console.log(err));
+
+  Promise.all([paymentStatusPromise, nameDatePromise])
+    .then(() => {
+      res.redirect('/dashboard');
     })
     .catch(err => console.log(err));
 });
 
-// editar tarefas / completar tarefas
-// const {
-//   name,
-//   date,
-//   value,
-//   paidBy,
-//   whoOwes,
-// } = req.body;
+// Deletes
+router.post('/delete/task/:taskId', ensureLoggedIn(), (req, res) => {
+  const { taskId } = req.params;
+  Task.findByIdAndDelete(taskId)
+    .then((task) => {
+      res.redirect('/dashboard');
+    })
+    .catch(e => console.log(e));
+});
+
+router.post('/delete/group/:groupId', ensureLoggedIn(), (req, res) => {
+  const { groupId } = req.params;
+  User.findOneAndUpdate({ groupId }, { groupId: null })
+    .then(() => {
+      Group.findByIdAndDelete(groupId)
+        .then(() => res.redirect('/create/group'))
+        .catch(e => console.log(e));
+    })
+    .catch(e => console.log(e));
+});
+
+router.post('/delete/userfromgroup/', ensureLoggedIn(), (req, res) => {
+  const { email } = req.body;
+  User.findOneAndUpdate({ username: email }, { groupId: null })
+    .then((user) => {
+      console.log(user);
+      Group.findByIdAndUpdate(req.user.groupId, { $pull: { people: user._id } })
+        .then(() => res.redirect('/create/group'))
+        .catch(e => console.log(e));
+    })
+    .catch(e => console.log(e));
+});
+
+router.post('/delete/user/:userId', ensureLoggedIn(), (req, res) => {
+  const { userId } = req.user._id;
+  Group.findOneAndUpdate({ people: userId }, { $pull: { people: userId } })
+    .then(() => {
+      User.findByIdAndDelete(userId)
+        .then(() => {
+          req.logout();
+          res.redirect('/');
+        })
+        .catch(e => console.log(e));
+    })
+    .catch(e => console.log(e));
+});
 
 module.exports = router;

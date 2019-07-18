@@ -17,7 +17,7 @@ router.get('/signup', ensureLoggedOut(), (req, res) => {
 router.get('/signup/:groupId', ensureLoggedOut(), (req, res) => {
   const { groupId } = req.params;
   const { email } = req.query;
-  res.render('auth/signupInvite', { groupId, email });
+  res.render('auth/invite-signup', { groupId, email });
 });
 
 // Signup novo membro

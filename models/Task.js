@@ -6,6 +6,8 @@ const taskSchema = new Schema({
   name: String,
   date: String,
   value: { type: Number, default: 0 },
+  amountPaid: Number,
+  amountDue: Number,
   originGroup: { type: Schema.Types.ObjectId, ref: 'Group' },
   paidBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   whoOwes: [{ type: Schema.Types.ObjectId, ref: 'User' }],

@@ -1,10 +1,24 @@
-<h1>{{task.name}}</h1>
-<h2>Paid By</h2>
-<h3>Amount spent: R$ {{task.value}}</h3>
-{{#each task.paidBy}}
-  <li>{{name}}</li>
-{{/each}}
-<h2>Who Owes</h2>
-{{#each task.whoOwes}}
-  <li>{{name}} owes: R$ {{../roundEvenSplit}}</li>
-{{/each}}
+<form action="/edit/task/{{task._id}}" method="post">
+  Name: <br>
+  <input type="text" name="name" value="{{task.name}}"> 
+  <br><br>
+  Date: <br>
+  <input type="date" name="date" value="{{task.date}}">
+  <h3>Amount spent: R$ {{task.value}}</h3>
+  <br><br>
+  <h3>Paid already: R$ {{task.amountPaid}}</h3>
+  <h3>Amount due: R$ {{task.amountDue}}</h3>
+  <h2>Paid By</h2>
+  {{#each task.paidBy}}
+    <li>{{name}}</li>
+  {{/each}}
+  <br><br>
+  <h2>Who Owes</h2>
+  {{#each task.whoOwes}}
+    <span>{{name}}  </span>
+    <input type="checkbox" name="paidBy" value="{{_id}}">
+  {{/each}}
+  <input type="number" step="0.01" name="amountPaid" placeholder="Amount Paid">
+  <br><br>
+  <input type="submit">
+</form>
