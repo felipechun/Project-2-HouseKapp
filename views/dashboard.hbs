@@ -60,9 +60,11 @@
                       </button>
                     </div>
                     <div id="task-check" class="col-4 text-center"> <!-- DELETE -->
-                      <button class="btn btn-outline-danger pl-4 pr-4" onclick="return confirm('Are you sure? This cannot be undone.');">
+                    <form action="/delete/task/{{_id}}" method="post">
+                      <button class="btn btn-outline-danger pl-4 pr-4" onclick="return confirm('Are you sure? This cannot be undone.');" type="submit">
                         <img class="icons" src="images/minus-icon.png" alt="nope"> 
                       </button>
+                    </form>
                     </div>
                   </div>
                 </div>
@@ -91,6 +93,7 @@
           </h3>
           {{#each tasks}}
             {{#if value}}
+            {{#if amountDue}}
             <div class="card mb-3">
               <div class="card-body">
                 <div class="row">
@@ -130,6 +133,8 @@
                 <div class="container-fluid">
                   <div id="" class="row mt-2">
                     <div id="" class="col-lg-3 col-sm-12 text-left"> <!-- PAID -->
+                    <input type="text" name="name" value="{{name}}" hidden>
+                    <input type="date" name="date" value="{{date}}" hidden>
                       <label>Paid: </label>
                       {{#each paidBy}}
                           <span>{{name}}&nbsp;</span>
@@ -160,9 +165,9 @@
                 </div>
               </form>
             </div>
-            {{/unless}}
             {{/if}}
-          {{/each }}
+            {{/if}}
+          {{/each}}
         </div>
       </div>
     </div>
@@ -171,24 +176,33 @@
     <div class="col-lg-12 col-sm-12 my-auto"> <!-- COMPLETED TASKS -->
       <div class="card">
         <div class="card-body">
-          <h3 class="text-wrap black-text card-title"><b>Done</b></h3>
+          <h3 class="text-wrap black-text card-title"><b>Completed</b></h3>
+          <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Task/Expense</th>
+              <th scope="col">Value</th>
+              <th scope="col">Participants</th>
+            </tr>
+          </thead>
           {{#each tasks}}
-            {{#if completed}}
-            <div class="row">
-              <div class="col-6 text-left">
-                <a class="card-text">{{name}}</a>
-              </div>
-              <div class="col-3 text-right">
+          {{#if completed}}
+            <tbody>
+              <tr>
+                <td>{{date}}</td>
+                <td>{{name}}</td>
+                <td>{{#if value}}${{value}}{{/if}}</td>
+                <td>
                 {{#each paidBy}}
-                <a class="card-text text-muted text-right">{{name}}</a>
+                  {{name}}&nbsp; |
                 {{/each}}
-              </div>
-              <div class="col-3 text-right">
-                <a class="card-text text-muted text-right">{{date}}</a>
-              </div>
-            </div>
+                </td>
+              </tr>
+            </tbody>
             {{/if}}
           {{/each}}
+        </table>
         </div>
       </div>
     </div>
@@ -209,29 +223,38 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/edit-home" method="POST"> <!--FILL IN EDIT HOME POST ROUTE-->
+        <form action="/edit/group/{{group._id}}" method="POST"> <!--FILL IN EDIT HOME POST ROUTE-->
           <div class="form-group">
             <div class="input-group">
-              <input type="text" name="name" class="form-control" value="{{group.people.[0].groupName}}">
+              <input type="text" name="name" class="form-control" value="{{group.name}}">
               <div class="input-group-append">
                 <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure? This cannot be undone.');">Delete</button>
               </div>
             </div>
           </div>
+          {{!-- <input type="email" value={{loggedUser.username}} hidden name="people"> --}}
           {{#each group.people}}
           <div class="form-group">
             <div class="input-group mb-3">
-              <input disabled type="text" name="name" class="form-control" value="{{name}}">
+              <input type="text" name="people" class="form-control" value="{{username}}" disabled>
               <div class="input-group-append">
-                <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure? This cannot be undone.');">Remove</button>
               </div>
             </div>
           </div>
         {{/each}}
         <!-- insert new input for a roomate -->
           <button type="button" id="add-roommate" class="btn btn-primary">Invite a roomate</button>
-          <button type="submit" class="btn btn-success">Edit</button>
+          <button type="submit" class="btn btn-success">Submit</button>
         </form>
+        <button data-toggle="collapse" data-target="#remove-roommate" class="btn btn-sm btn-danger">Remove a roommate?</button>
+          <div id="remove-roommate" class="collapse"> <!-- TASK ICONS -->
+            <div class="container-fluid">
+              <form action="/delete/userfromgroup/" method="post">
+                <input type="email" name="email" placeholder="Type in user email to delete from group">
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </div>
+          </div>
       </div>
     </div>
   </div>
