@@ -24,7 +24,7 @@ router.get('/signup/:groupId', ensureLoggedOut(), (req, res) => {
 router.post('/signup', ensureLoggedOut(), uploadCloud.single('avatar'), (req, res) => {
   const { username, name, password, confirmPassword } = req.body;
 
-  let imgPath = 'https://image.flaticon.com/icons/png/128/16/16467.png';
+  let imgPath = 'images/default-profile.png';
   let imgName = 'no_image';
 
   if (req.file !== undefined) {
