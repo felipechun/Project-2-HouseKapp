@@ -74,33 +74,6 @@ router.post('/signup', ensureLoggedOut(), uploadCloud.single('avatar'), (req, re
 
     newUser.save()
       .then(() => {
-        const transporter = nodemailer.createTransport({
-          host: 'smtp.mailtrap.io',
-          port: 2525,
-          auth: {
-            user: process.env.EMAIL_USERNAME,
-            pass: process.env.EMAIL_PASSWORD,
-          },
-        });
-        // Mandar params do id da casa na confirmação
-        transporter.sendMail({
-          from: '"HouseKapp" <no-reply@housekapp.com>',
-          to: username,
-          subject: 'Welcome to HouseKapp! Please confirm your account.',
-          text: `
-          Hi, there!
-
-          Welcome to HouseKapp, the premier service for services!
-          
-          Please, click on the link below to confirm your account:
-          http://localhost:3000/auth/confirm/${authToken}`,
-          html: `
-          <h3>Hi, there!</h3>
-
-          <p>Welcome to HouseKapp, the premier service for services!</p>
-
-          <p>Please, click <a href="http://localhost:3000/auth/confirm/${authToken}">here</a> to confirm your account.</p>`,
-        });
         res.redirect('/');
       })
       .catch((e) => {

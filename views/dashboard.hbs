@@ -41,6 +41,7 @@
             <h5 class="card-title font-weight-bold text-center">{{name}}</h5>
               {{#each tasks}}
               {{#unless value}}
+              {{#unless completed}}
               <!-- have to insert unique task id to toggle individual buttons -->
               <button class="btn btn-block btn-info mb-2 mt-2 task-button" data-toggle="collapse" data-target="#task-icons{{_id}}{{../_id}}"> 
                 <p>{{name}}</p>
@@ -50,15 +51,50 @@
                 <div class="container-fluid">
                   <div id="icon-row" class="row mt-2">
                     <div id="task-check" class="col-4 text-center"> <!-- CHECK -->
+                    <form action="/edit/completetask/{{_id}}" method="post">
                       <button class="btn btn-outline-success pl-4 pr-4">
                         <img class="icons" src="images/checkmark-icon.png" alt="nope"> 
                       </button>
+                    </form>
                     </div>
                     <div id="task-check" class="col-4 text-center"> <!-- EDIT -->
                       <button class="btn btn-outline-primary pl-4 pr-4" data-toggle="modal" data-target="#edit-task-modal">
                         <img class="icons" src="images/edit-icon.png" alt="nope"> 
                       </button>
                     </div>
+                    <!--Edit Task Modal -->
+                    <div class="modal fade" id="edit-task-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header bg-light border-0">
+                            <h5 class="modal-title black-text" id="exampleModalLabel">Edit task</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <form action="/edit/task/{{_id}}" method="POST"> <!--FILL IN ADD TASK POST ROUTE-->
+                              <div class="form-group">
+                                <input type="text" name="name" class="form-control" value="{{name}}" required>
+                              </div>
+                              <div class="form-group">
+                                <input type="date" name="date" class="form-control" placeholder="{{date}}" value="{{date}}">
+                              </div>
+                              <div id="who-id" class="form-group">
+                                <label>Who is this for? </label>
+                                <select class="form-control" name="paidBy">
+                                  {{#each ../../users}}
+                                  <option name="whoOwes">{{name}}</option>
+                                  {{/each}}
+                                </select>
+                              </div>
+                              <button type="submit" class="btn btn-success">Edit</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--End Edit Task Modal -->
                     <div id="task-check" class="col-4 text-center"> <!-- DELETE -->
                     <form action="/delete/task/{{_id}}" method="post">
                       <button class="btn btn-outline-danger pl-4 pr-4" onclick="return confirm('Are you sure? This cannot be undone.');" type="submit">
@@ -69,6 +105,7 @@
                   </div>
                 </div>
               </div>
+              {{/unless}}
               {{/unless}}
             {{/each}}
           </div>
@@ -246,14 +283,16 @@
           <button type="button" id="add-roommate" class="btn btn-primary">Invite a roomate</button>
           <button type="submit" class="btn btn-success">Submit</button>
         </form>
-        <button data-toggle="collapse" data-target="#remove-roommate" class="btn btn-sm btn-danger">Remove a roommate?</button>
+        <button data-toggle="collapse" data-target="#remove-roommate" class="btn btn-sm btn-danger mt-3">Remove a roommate?</button>
           <div id="remove-roommate" class="collapse"> <!-- TASK ICONS -->
-            <div class="container-fluid">
-              <form action="/delete/userfromgroup/" method="post">
-                <input type="email" name="email" placeholder="Type in user email to delete from group">
-                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-              </form>
-            </div>
+            <form action="/delete/userfromgroup/" method="post">
+              <div class="input-group mt-3">
+                <input class="form-control" type="email" name="email" placeholder="Type in user email to delete from group">
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </div>
+              </div>
+            </form>
           </div>
       </div>
     </div>
@@ -295,43 +334,6 @@
     </div>
   </div>
 </div>
-
-
-
-<!--Edit Task Modal -->
-<div class="modal fade" id="edit-task-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-light border-0">
-        <h5 class="modal-title black-text" id="exampleModalLabel">Edit task</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="/edit/task" method="POST"> <!--FILL IN ADD TASK POST ROUTE-->
-          <div class="form-group">
-            <input type="text" name="name" class="form-control" value="task name to be edited" required>
-          </div>
-          <div class="form-group">
-            <input type="date" name="date" class="form-control" placeholder="Date" value="date to be edited">
-          </div>
-          <div id="who-id" class="form-group">
-            <label>Who is this for? </label>
-            <select class="form-control" name="paidBy">
-              {{#each group.people}}
-              <option name="whoOwes">{{name}}</option>
-              {{/each}}
-            </select>
-          </div>
-          <button type="submit" class="btn btn-success">Edit</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 
 <!--Add Expense Modal -->
 <div class="modal fade" id="add-expense-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

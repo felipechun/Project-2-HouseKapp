@@ -54,14 +54,13 @@ router.post('/create/group', ensureLoggedIn(), (req, res) => {
   const { name, people } = req.body;
   const newGroup = new Group({ name });
 
-  newGroup.save()
-    .then((group) => {
-      // Faz update do usuário que originou o request para adicioná-lo ao grupo que criou
-      people.map((person) => {
-        User.findOneAndUpdate({ username: person }, { groupId: group._id })
+  if (typeof people !== 'object') {
+    newGroup.save()
+      .then((group) => {
+        User.findOneAndUpdate({ username: people }, { groupId: group._id })
           .then((user) => {
             if (user === null) {
-              inviteUser(req.user.name, person, group._id);
+              inviteUser(req.user.name, people, group._id);
               res.redirect('/dashboard');
             } else {
               Group.findByIdAndUpdate(newGroup._id, { $push: { people: user._id } })
@@ -72,8 +71,28 @@ router.post('/create/group', ensureLoggedIn(), (req, res) => {
             } })
           .catch(e => console.log(e));
       });
-    })
-    .catch(err => console.log(err));
+  } else {
+    newGroup.save()
+      .then((group) => {
+        // Faz update do usuário que originou o request para adicioná-lo ao grupo que criou
+        people.map((person) => {
+          User.findOneAndUpdate({ username: person }, { groupId: group._id })
+            .then((user) => {
+              if (user === null) {
+                inviteUser(req.user.name, person, group._id);
+                res.redirect('/dashboard');
+              } else {
+                Group.findByIdAndUpdate(newGroup._id, { $push: { people: user._id } })
+                  .then(() => {
+                    res.redirect('/dashboard');
+                  })
+                  .catch(err => console.log(err));
+              } })
+            .catch(e => console.log(e));
+        });
+      })
+      .catch(err => console.log(err));
+  }
 });
 
 router.get('/create/task', ensureLoggedIn(), (req, res) => {
@@ -169,8 +188,8 @@ router.post('/edit/group/:groupId', (req, res) => {
   const { groupId } = req.params;
   const { name, people } = req.body;
 
-  if (typeof people === 'object') {
-    Group.findOne({ groupId })
+  const promise1 = (typeof people === 'object')
+    ? Group.findOne({ groupId })
       .then((group) => {
         people.map((person) => {
           User.findOneAndUpdate({ username: person }, { groupId })
@@ -179,17 +198,14 @@ router.post('/edit/group/:groupId', (req, res) => {
                 inviteUser(req.user.name, person, groupId);
               } else {
                 Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
-                  .then(() => {
-                    res.redirect('/dashboard');
-                  })
+                  .then(x => x)
                   .catch(err => console.log(err));
               }})
             .catch(e => console.log(e));
-        })
-          .catch(err => console.log(err));
-      });
-  } else {
-    Group.findOne({ groupId })
+        });
+      })
+      .catch(err => console.log(err))
+    : Group.findOne({ groupId })
       .then((group) => {
         User.findOneAndUpdate({ username: people }, { groupId })
           .then((user) => {
@@ -197,15 +213,54 @@ router.post('/edit/group/:groupId', (req, res) => {
               inviteUser(req.user.name, people, groupId);
             } else {
               Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
-                .then(() => {
-                  res.redirect('/dashboard');
-                })
+                .then(x => x)
                 .catch(err => console.log(err));
             }})
           .catch(e => console.log(e));
       })
       .catch(e => console.log(e));
-  }
+
+  Promise.all([promise1])
+    .then(() => res.redirect('/dashboard'))
+    .catch(error => console.log(error));
+
+  // if (typeof people === 'object') {
+  //   Group.findOne({ groupId })
+  //     .then((group) => {
+  //       people.map((person) => {
+  //         User.findOneAndUpdate({ username: person }, { groupId })
+  //           .then((user) => {
+  //             if (user === null) {
+  //               inviteUser(req.user.name, person, groupId);
+  //             } else {
+  //               Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
+  //                 .then(() => {
+  //                   res.redirect('/dashboard');
+  //                 })
+  //                 .catch(err => console.log(err));
+  //             }})
+  //           .catch(e => console.log(e));
+  //       })
+  //         .catch(err => console.log(err));
+  //     });
+  // } else {
+  //   Group.findOne({ groupId })
+  //     .then((group) => {
+  //       User.findOneAndUpdate({ username: people }, { groupId })
+  //         .then((user) => {
+  //           if (user === null) {
+  //             inviteUser(req.user.name, people, groupId);
+  //           } else {
+  //             Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
+  //               .then(() => {
+  //                 res.redirect('/dashboard');
+  //               })
+  //               .catch(err => console.log(err));
+  //           }})
+  //         .catch(e => console.log(e));
+  //     })
+  //     .catch(e => console.log(e));
+  // }
 });
 
 // Edit tem que atualizar valores, dar check/ adicionar pessoas e concluir
@@ -280,6 +335,14 @@ router.post('/edit/task/:taskId', (req, res) => {
     .then(() => {
       res.redirect('/dashboard');
     })
+    .catch(err => console.log(err));
+});
+
+router.post('/edit/completetask/:taskId', (req, res) => {
+  const { taskId } = req.params;
+
+  Task.findByIdAndUpdate(taskId, { completed: true })
+    .then(() => res.redirect('/dashboard'))
     .catch(err => console.log(err));
 });
 
