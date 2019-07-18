@@ -15,7 +15,7 @@ const MongoStore = require('connect-mongo')(session);
 const User = require('./models/User');
 
 mongoose
-  .connect('mongodb://localhost/housekapp', {useNewUrlParser: true})
+  .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
   .then(x => {
     console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
   })
