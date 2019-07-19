@@ -11,7 +11,11 @@ cloudinary.config({
 const storage = cloudinaryStorage({
   cloudinary,
   folder: 'HouseKapp', // The name of the folder in cloudinary
+<<<<<<< HEAD
   allowedFormats: ['jpg', 'jpeg', 'png'],
+=======
+  allowedFormats: ['jpg', 'png', 'jpeg'],
+>>>>>>> developer
   filename: function (req, file, cb) {
     cb(null, file.originalname); // The file on cloudinary would have the same name as the original file name
   }

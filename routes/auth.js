@@ -24,7 +24,7 @@ router.get('/signup/:groupId', ensureLoggedOut(), (req, res) => {
 router.post('/signup', ensureLoggedOut(), uploadCloud.single('avatar'), (req, res) => {
   const { username, name, password, confirmPassword } = req.body;
 
-  let imgPath = 'https://image.flaticon.com/icons/png/128/16/16467.png';
+  let imgPath = 'images/default-profile.png';
   let imgName = 'no_image';
 
   if (req.file !== undefined) {
@@ -74,33 +74,6 @@ router.post('/signup', ensureLoggedOut(), uploadCloud.single('avatar'), (req, re
 
     newUser.save()
       .then(() => {
-        const transporter = nodemailer.createTransport({
-          host: 'smtp.mailtrap.io',
-          port: 2525,
-          auth: {
-            user: process.env.EMAIL_USERNAME,
-            pass: process.env.EMAIL_PASSWORD,
-          },
-        });
-        // Mandar params do id da casa na confirmação
-        transporter.sendMail({
-          from: '"HouseKapp" <no-reply@housekapp.com>',
-          to: username,
-          subject: 'Welcome to HouseKapp! Please confirm your account.',
-          text: `
-          Hi, there!
-
-          Welcome to HouseKapp, the premier service for services!
-          
-          Please, click on the link below to confirm your account:
-          http://localhost:3000/auth/confirm/${authToken}`,
-          html: `
-          <h3>Hi, there!</h3>
-
-          <p>Welcome to HouseKapp, the premier service for services!</p>
-
-          <p>Please, click <a href="http://localhost:3000/auth/confirm/${authToken}">here</a> to confirm your account.</p>`,
-        });
         res.redirect('/');
       })
       .catch((e) => {
@@ -114,29 +87,37 @@ router.post('/signup', ensureLoggedOut(), uploadCloud.single('avatar'), (req, re
 router.post('/signup/:groupId', ensureLoggedOut(), uploadCloud.single('avatar'), (req, res) => {
   const { username, name, password, confirmPassword, groupId } = req.body;
 
+<<<<<<< HEAD
   let imgPath = '/images/default-profile.png';
   let imgName = 'no_image';
 
   if (req.file !== undefined) {
     console.log(req.file.path);
     imgPath = req.file.path;
+=======
+  let imgPath = 'images/default-profile.png';
+  let imgName = 'no_image';
+
+  if (req.file !== undefined) {
+    imgPath = req.file.secure_url;
+>>>>>>> developer
     imgName = req.file.originalname;
   }
 
   // Check validity
   if (username === '' || password === '') {
-    res.render('auth/signup', { message: 'Indicate username and password' });
+    res.render('auth/invite-signup', { message: 'Indicate username and password' });
     return;
   }
 
   if (password !== confirmPassword) {
-    res.render('auth/signup', { message: 'Passwords don\'t match' });
+    res.render('auth/invite-signup', { message: 'Passwords don\'t match' });
     return;
   }
 
   User.findOne({ username }, 'email', (err, user) => {
     if (user !== null) {
-      res.render('auth/signup', { message: 'This email is already in use' });
+      res.render('auth/invite-signup', { message: 'This email is already in use' });
       return;
     }
 
@@ -180,20 +161,20 @@ router.post('/signup/:groupId', ensureLoggedOut(), uploadCloud.single('avatar'),
           })
           .catch((e) => {
             console.log(e);
-            res.render('auth/signup', { message: 'Something went wrong' });
+            res.render('auth/invite-signup', { message: 'Something went wrong' });
           });
       })
       .catch(error => console.log(error));
   });
 });
 
-router.get('/login', ensureLoggedOut(), (req, res) => {
-  res.render('auth/login');
-});
+// router.get('/login', ensureLoggedOut(), (req, res) => {
+//   res.render('auth/login');
+// });
 
 router.post('/login', passport.authenticate('local', {
   successReturnToOrRedirect: '/dashboard',
-  failureRedirect: '/login',
+  failureRedirect: '/',
   passReqToCallback: true,
 }));
 
@@ -201,6 +182,25 @@ router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
+
+// Social Login - GOOGLE
+
+router.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ],
+  }),
+);
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/', // here you would redirect to the login page using traditional login approach
+  }),
+);
 
 // Criar rota de verificação de email (EXTRA)
 

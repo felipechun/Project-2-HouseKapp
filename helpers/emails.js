@@ -20,13 +20,13 @@ const inviteUser = (origUser, invited, groupId) => {
     ${origUser} has invited you to his HouseKapp group!
     
     Please, click on the link below to create your account and start sharing tasks and expenses:
-    http://localhost:3000/signup/${groupId}?email=${invited}`,
+    https://housekapp.herokuapp.com/signup/${groupId}?email=${invited}`,
     html: `
     <h3>Hi, there!</h3>
 
     <p>${origUser} has invited you to his HouseKapp group!</p>
 
-    <p>Please, click <a href="http://localhost:3000/signup/${groupId}?email=${invited}">here</a> create your account and start sharing tasks and expenses!</p>`,
+    <p>Please, click <a href="https://housekapp.herokuapp.com/signup/${groupId}?email=${invited}">here</a> create your account and start sharing tasks and expenses!</p>`,
   });
 };
 

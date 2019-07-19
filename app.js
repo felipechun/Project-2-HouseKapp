@@ -9,13 +9,13 @@ const path         = require('path');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const bcrypt = require('bcrypt');
 const MongoStore = require('connect-mongo')(session);
 const User = require('./models/User');
-const Task = require('./models/Task');
 
 mongoose
-  .connect('mongodb://localhost/housekapp', {useNewUrlParser: true})
+  .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
   .then(x => {
     console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
   })
@@ -60,6 +60,35 @@ passport.deserializeUser((id, cb) => {
   });
 });
 
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_KEY,
+      clientSecret: process.env.GOOGLE_SECRET,
+      callbackURL: '/auth/google/callback',
+    },
+    (accessToken, refreshToken, profile, done) => {
+      // to see the structure of the data in received response:
+      console.log("Google account details:", profile);
+
+      User.findOne({ googleID: profile.id })
+        .then((user) => {
+          if (user) {
+            done(null, user);
+            return;
+          }
+
+          User.create({ googleID: profile.id, username: profile.emails[0].value, name: profile.displayName, imgPath: profile.photos[0].value })
+            .then((newUser) => {
+              done(null, newUser);
+            })
+            .catch(err => done(err)); // closes User.create()
+        })
+        .catch(err => done(err)); // closes User.findOne()
+    },
+  ),
+);
+
 passport.use(new LocalStrategy((username, password, next) => {
   User.findOne({ username }, (err, user) => {
     if (err) {
@@ -90,5 +119,6 @@ app.use('/', authRoutes);
 const index = require('./routes/index');
 app.use('/', index);
 
+app.listen(process.env.PORT);
 
 module.exports = app;
