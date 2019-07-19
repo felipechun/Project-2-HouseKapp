@@ -28,7 +28,9 @@ router.get('/dashboard', ensureLoggedIn(), (req, res) => {
             Task.find({ originGroup: groupId })
               .populate('paidBy whoOwes')
               .then((tasks) => {
-                res.render('dashboard', { group, users, tasks, loggedUser });
+                Task.findOneAndUpdate({ amountDue: { $lt: 0 }}, { $set: { amountDue: 0 }})
+                  .then(() => res.render('dashboard', { group, users, tasks, loggedUser }))
+                  .catch(e => console.log(e));
               })
               .catch(e => console.log(e));
           })
@@ -124,7 +126,7 @@ router.post('/create/task', (req, res) => {
     newTask = new Task({ name, date, value, amountPaid, originGroup, completed: false });
   }
 
-  if (amountPaid === value) {
+  if (amountPaid === value && value > 0) {
     newTask.completed = true;
   } else {
     newTask.completed = false;
@@ -192,42 +194,50 @@ router.post('/edit/group/:groupId', (req, res) => {
   const { groupId } = req.params;
   const { name, people } = req.body;
 
-  const promise1 = (typeof people === 'object')
-    ? Group.findOne({ groupId })
-      .then((group) => {
-        people.map((person) => {
-          User.findOneAndUpdate({ username: person }, { groupId })
+  if (!people) {
+    console.log(groupId);
+    Group.findByIdAndUpdate(groupId, { name })
+      .then(() => {
+        res.redirect('/dashboard');
+      })
+      .catch(e => console.log(e));
+  } else {
+    const promise1 = (typeof people === 'object')
+      ? Group.findOne({ groupId })
+        .then((group) => {
+          people.map((person) => {
+            User.findOneAndUpdate({ username: person }, { groupId })
+              .then((user) => {
+                if (user === null) {
+                  inviteUser(req.user.name, person, groupId);
+                } else {
+                  Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
+                    .then(x => x)
+                    .catch(err => console.log(err));
+                }})
+              .catch(e => console.log(e));
+          });
+        })
+        .catch(err => console.log(err))
+      : Group.findOne({ groupId })
+        .then((group) => {
+          User.findOneAndUpdate({ username: people }, { groupId })
             .then((user) => {
               if (user === null) {
-                inviteUser(req.user.name, person, groupId);
+                inviteUser(req.user.name, people, groupId);
               } else {
                 Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
                   .then(x => x)
                   .catch(err => console.log(err));
               }})
             .catch(e => console.log(e));
-        });
-      })
-      .catch(err => console.log(err))
-    : Group.findOne({ groupId })
-      .then((group) => {
-        User.findOneAndUpdate({ username: people }, { groupId })
-          .then((user) => {
-            if (user === null) {
-              inviteUser(req.user.name, people, groupId);
-            } else {
-              Group.findByIdAndUpdate(groupId, { $push: { people: user._id }, name })
-                .then(x => x)
-                .catch(err => console.log(err));
-            }})
-          .catch(e => console.log(e));
-      })
-      .catch(e => console.log(e));
+        })
+        .catch(e => console.log(e));
 
-  Promise.all([promise1])
-    .then(() => res.redirect('/dashboard'))
-    .catch(error => console.log(error));
-
+    Promise.all([promise1])
+      .then(() => res.redirect('/dashboard'))
+      .catch(error => console.log(error));
+  }
 });
 
 router.get('/edit/task/:taskId', ensureLoggedIn(), (req, res) => {
@@ -245,6 +255,8 @@ router.post('/edit/task/:taskId', (req, res) => {
     name,
     date,
     amountPaid,
+    paidBy,
+    whoOwes,
   } = req.body;
 
   // muda status de pagamento
@@ -275,7 +287,7 @@ router.post('/edit/task/:taskId', (req, res) => {
             amountPaid: accAmountPaid,
           })
           .then((tk) => {
-            if (tk.whoOwes.length === 1 || accAmountPaid >= task.value) {
+            if (tk.whoOwes.length === 1 || accAmountPaid >= task.value || amountDue <= 0) {
               Task.findByIdAndUpdate(task._id, { completed: true })
                 .then(f => f)
                 .catch(e => console.log(e));
@@ -295,11 +307,44 @@ router.post('/edit/task/:taskId', (req, res) => {
     })
     .catch(err => console.log(err));
 
-  Promise.all([paymentStatusPromise, nameDatePromise])
+  // muda pessoas
+  const paidOwedByPromise = Task.findById(req.params.taskId)
+    .then((task) => {
+      Task.findByIdAndUpdate(task._id, { $set: { paidBy: paidBy }, $set: { whoOwes: whoOwes } })
+        .then((x) => {
+          return x;
+        })
+        .catch(e => console.log(e));
+    })
+    .catch(err => console.log(err));
+
+  Promise.all([paymentStatusPromise, nameDatePromise, paidOwedByPromise])
     .then(() => {
       res.redirect('/dashboard');
     })
     .catch(err => console.log(err));
+});
+
+router.post('/edit/task/renamereassign/:taskId/', (req, res) => {
+  const { taskId } = req.params;
+  const { date, name, paidBy } = req.body;
+
+  Task.findById(taskId)
+    .then((task) => {
+      const originalPayer = task.paidBy;
+      User.findByIdAndUpdate(paidBy, { $push: { tasks: taskId } })
+        .then(() => {
+          Task.findByIdAndUpdate(taskId, { date, name, $set: { paidBy:paidBy } })
+            .then(() => {
+              User.findByIdAndUpdate(originalPayer, { $pull: { tasks: taskId } })
+                .then(() => res.redirect('/dashboard'))
+                .catch(e => console.log(e));
+            })
+            .catch(e => console.log(e));
+        })
+        .catch(e => console.log(e));
+    })
+    .catch(e => console.log(e));
 });
 
 router.post('/edit/completetask/:taskId', (req, res) => {

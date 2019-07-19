@@ -74,7 +74,7 @@
                             </button>
                           </div>
                           <div class="modal-body">
-                            <form action="/edit/task/{{_id}}" method="POST"> <!--FILL IN ADD TASK POST ROUTE-->
+                            <form action="/edit/task/renamereassign/{{_id}}" method="POST"> <!--FILL IN ADD TASK POST ROUTE-->
                               <div class="form-group">
                                 <input type="text" name="name" class="form-control" value="{{name}}" required>
                               </div>
@@ -82,10 +82,11 @@
                                 <input type="date" name="date" class="form-control" placeholder="{{date}}" value="{{date}}">
                               </div>
                               <div id="who-id" class="form-group">
+                                {{!-- {{../../users.[0]}} --}}
                                 <label>Who is this for? </label>
                                 <select class="form-control" name="paidBy">
                                   {{#each ../../users}}
-                                  <option name="whoOwes">{{name}}</option>
+                                  <option value="{{_id}}">{{name}}</option>
                                   {{/each}}
                                 </select>
                               </div>
@@ -137,8 +138,8 @@
                 <div class="row">
                   <div class="col-md-3 col-xs-12 text-left">
                     <a class="card-text">{{name}}</a>
-                    <button class="btn border-none" data-toggle="collapse" data-target="#pay-expense{{_id}}">
-                      <img class="icons" src="images/checkmark-icon.png" alt="nope" id-attr="{{_id}}"> 
+                    &nbsp;<button class="btn btn-sm btn-outline-success" data-toggle="collapse" data-target="#pay-expense{{_id}}">
+                      <a id-attr="{{_id}}">Pay</a>
                     </button>
                   </div>
                   <div class="col-lg-2 col-sm-12 text-left">
