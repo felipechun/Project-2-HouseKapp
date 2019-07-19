@@ -87,20 +87,11 @@ router.post('/signup', ensureLoggedOut(), uploadCloud.single('avatar'), (req, re
 router.post('/signup/:groupId', ensureLoggedOut(), uploadCloud.single('avatar'), (req, res) => {
   const { username, name, password, confirmPassword, groupId } = req.body;
 
-<<<<<<< HEAD
-  let imgPath = '/images/default-profile.png';
-  let imgName = 'no_image';
-
-  if (req.file !== undefined) {
-    console.log(req.file.path);
-    imgPath = req.file.path;
-=======
   let imgPath = 'images/default-profile.png';
   let imgName = 'no_image';
 
   if (req.file !== undefined) {
     imgPath = req.file.secure_url;
->>>>>>> developer
     imgName = req.file.originalname;
   }
 
