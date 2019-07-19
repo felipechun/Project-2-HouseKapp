@@ -15,7 +15,6 @@ const userSchema = new Schema({
   tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
   imgPath: String,
   imgName: String,
-  facebookId: String,
 }, {
   timestamps: {
     createdAt: 'created_at',

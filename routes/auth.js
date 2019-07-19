@@ -177,6 +177,23 @@ router.get('/logout', (req, res) => {
 
 // Social Login - GOOGLE
 
+router.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ],
+  }),
+);
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/', // here you would redirect to the login page using traditional login approach
+  }),
+);
+
 // Criar rota de verificação de email (EXTRA)
 
 module.exports = router;
