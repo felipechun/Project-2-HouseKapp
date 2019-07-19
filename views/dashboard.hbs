@@ -200,9 +200,16 @@
                         </div>  
                       </div>
                     </div>
-                  </div>
+                  </div>  
                 </div>
               </form>
+              <div id="task-check" class=""> <!-- DELETE -->
+                <form action="/delete/task/{{_id}}" method="post">
+                  <button class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure? This cannot be undone.');" type="submit">
+                    <img class="icons" src="images/minus-icon.png" alt="nope"> 
+                  </button>
+                </form>
+              </div>
             </div>
             {{/if}}
             {{/if}}

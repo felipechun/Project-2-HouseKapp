@@ -19,6 +19,7 @@ router.get('/dashboard', ensureLoggedIn(), (req, res) => {
   } else {
     const { groupId } = req.user;
     const loggedUser = req.user;
+    console.log(loggedUser);
     Group.findById(groupId)
       .populate('people')
       .then((group) => {
@@ -287,7 +288,7 @@ router.post('/edit/task/:taskId', (req, res) => {
             amountPaid: accAmountPaid,
           })
           .then((tk) => {
-            if (tk.whoOwes.length === 1 || accAmountPaid >= task.value || amountDue <= 0) {
+            if (tk.whoOwes.length <= 1 || accAmountPaid >= task.value || amountDue <= 0) {
               Task.findByIdAndUpdate(task._id, { completed: true })
                 .then(f => f)
                 .catch(e => console.log(e));
@@ -307,18 +308,7 @@ router.post('/edit/task/:taskId', (req, res) => {
     })
     .catch(err => console.log(err));
 
-  // muda pessoas
-  const paidOwedByPromise = Task.findById(req.params.taskId)
-    .then((task) => {
-      Task.findByIdAndUpdate(task._id, { $set: { paidBy: paidBy }, $set: { whoOwes: whoOwes } })
-        .then((x) => {
-          return x;
-        })
-        .catch(e => console.log(e));
-    })
-    .catch(err => console.log(err));
-
-  Promise.all([paymentStatusPromise, nameDatePromise, paidOwedByPromise])
+  Promise.all([paymentStatusPromise, nameDatePromise])
     .then(() => {
       res.redirect('/dashboard');
     })
@@ -332,11 +322,11 @@ router.post('/edit/task/renamereassign/:taskId/', (req, res) => {
   Task.findById(taskId)
     .then((task) => {
       const originalPayer = task.paidBy;
-      User.findByIdAndUpdate(paidBy, { $push: { tasks: taskId } })
+      User.findByIdAndUpdate(originalPayer, { $pull: { tasks: taskId } })
         .then(() => {
           Task.findByIdAndUpdate(taskId, { date, name, $set: { paidBy:paidBy } })
             .then(() => {
-              User.findByIdAndUpdate(originalPayer, { $pull: { tasks: taskId } })
+              User.findByIdAndUpdate(paidBy, { $push: { tasks: taskId } })
                 .then(() => res.redirect('/dashboard'))
                 .catch(e => console.log(e));
             })
