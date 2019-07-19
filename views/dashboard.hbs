@@ -38,6 +38,7 @@
       <div class="col-sm-12 col-md-6 col-lg-4 pb-3">
         <div class="card">
           <div class="card-body">
+            <img class="card-title mx-auto d-block profile-img" src="{{imgPath}}" alt="profile picture">
             <h5 class="card-title font-weight-bold text-center">{{name}}</h5>
               {{#each tasks}}
               {{#unless value}}
@@ -99,8 +100,8 @@
                 <div class="row">
                   <div class="col-md-3 col-xs-12 text-left">
                     <a class="card-text">{{name}}</a>
-                    <button class="btn border-none" data-toggle="collapse" data-target="#pay-expense{{_id}}">
-                      <img class="icons" src="images/checkmark-icon.png" alt="nope" id-attr="{{_id}}"> 
+                    &nbsp;<button class="btn btn-sm btn-outline-success" data-toggle="collapse" data-target="#pay-expense{{_id}}">
+                      <a id-attr="{{_id}}">Pay</a>
                     </button>
                   </div>
                   <div class="col-lg-2 col-sm-12 text-left">
@@ -244,17 +245,19 @@
           </div>
         {{/each}}
         <!-- insert new input for a roomate -->
-          <button type="button" id="add-roommate" class="btn btn-primary">Invite a roomate</button>
-          <button type="submit" class="btn btn-success">Submit</button>
+          <button type="button" id="add-roommate" class="btn btn-primary btn-sm">Invite a roomate</button>
+          <button type="submit" class="btn btn-success btn-sm">Submit</button>
         </form>
-        <button data-toggle="collapse" data-target="#remove-roommate" class="btn btn-sm btn-danger">Remove a roommate?</button>
+        <button data-toggle="collapse" data-target="#remove-roommate" class="btn btn-sm btn-danger mt-3">Remove a roommate?</button>
           <div id="remove-roommate" class="collapse"> <!-- TASK ICONS -->
-            <div class="container-fluid">
-              <form action="/delete/userfromgroup/" method="post">
-                <input type="email" name="email" placeholder="Type in user email to delete from group">
-                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-              </form>
-            </div>
+            <form action="/delete/userfromgroup/" method="post">
+              <div class="input-group mt-3">
+                <input class="form-control" type="email" name="email" placeholder="Type in user email to delete from group">
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </div>
+              </div>
+            </form>
           </div>
       </div>
     </div>

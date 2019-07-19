@@ -57,3 +57,10 @@
 .big-container {
   padding-bottom: 140px;
 }
+.profile-img {
+  margin: 0, auto;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  object-fit: cover
+}
