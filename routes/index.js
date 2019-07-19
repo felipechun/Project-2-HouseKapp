@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
   res.render('index');
 });
 
-router.get('/dashboard', ensureLoggedIn(), (req, res) => {
+router.get('/dashboard', ensureLoggedIn('/'), (req, res) => {
   if (!req.user.groupId) {
     const { user } = req;
     res.render('addhome', { user });
@@ -41,7 +41,7 @@ router.get('/dashboard', ensureLoggedIn(), (req, res) => {
   }
 });
 
-router.get('/create/group/', ensureLoggedIn(), (req, res) => {
+router.get('/create/group/', ensureLoggedIn('/'), (req, res) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user.groupId) {
@@ -53,7 +53,7 @@ router.get('/create/group/', ensureLoggedIn(), (req, res) => {
     .catch(e => console.log(e));
 });
 
-router.post('/create/group', ensureLoggedIn(), (req, res) => {
+router.post('/create/group', ensureLoggedIn('/'), (req, res) => {
   const { name, people } = req.body;
   const newGroup = new Group({ name });
 
@@ -98,7 +98,7 @@ router.post('/create/group', ensureLoggedIn(), (req, res) => {
   }
 });
 
-router.get('/create/task', ensureLoggedIn(), (req, res) => {
+router.get('/create/task', ensureLoggedIn('/'), (req, res) => {
   Group.findById(req.user.groupId)
     .populate('people')
     .then((group) => {
@@ -181,7 +181,7 @@ router.post('/create/task', (req, res) => {
     .catch(err => console.log(err));
 });
 
-router.get('/edit/group/:groupId', ensureLoggedIn(), (req, res) => {
+router.get('/edit/group/:groupId', ensureLoggedIn('/'), (req, res) => {
   const { groupId } = req.params;
   Group.findById(groupId)
     .populate('people')
@@ -241,7 +241,7 @@ router.post('/edit/group/:groupId', (req, res) => {
   }
 });
 
-router.get('/edit/task/:taskId', ensureLoggedIn(), (req, res) => {
+router.get('/edit/task/:taskId', ensureLoggedIn('/'), (req, res) => {
   const { taskId } = req.params;
   Task.findById(taskId)
     .populate('whoOwes paidBy')
@@ -346,7 +346,7 @@ router.post('/edit/completetask/:taskId', (req, res) => {
 });
 
 // Deletes
-router.post('/delete/task/:taskId', ensureLoggedIn(), (req, res) => {
+router.post('/delete/task/:taskId', ensureLoggedIn('/'), (req, res) => {
   const { taskId } = req.params;
   Task.findByIdAndDelete(taskId)
     .then((task) => {
@@ -355,7 +355,7 @@ router.post('/delete/task/:taskId', ensureLoggedIn(), (req, res) => {
     .catch(e => console.log(e));
 });
 
-router.post('/delete/group/:groupId', ensureLoggedIn(), (req, res) => {
+router.post('/delete/group/:groupId', ensureLoggedIn('/'), (req, res) => {
   const { groupId } = req.params;
   User.findOneAndUpdate({ groupId }, { groupId: null })
     .then(() => {
@@ -366,7 +366,7 @@ router.post('/delete/group/:groupId', ensureLoggedIn(), (req, res) => {
     .catch(e => console.log(e));
 });
 
-router.post('/delete/userfromgroup/', ensureLoggedIn(), (req, res) => {
+router.post('/delete/userfromgroup/', ensureLoggedIn('/'), (req, res) => {
   const { email } = req.body;
   User.findOneAndUpdate({ username: email }, { groupId: null })
     .then((user) => {
@@ -378,7 +378,7 @@ router.post('/delete/userfromgroup/', ensureLoggedIn(), (req, res) => {
     .catch(e => console.log(e));
 });
 
-router.post('/delete/user/:userId', ensureLoggedIn(), (req, res) => {
+router.post('/delete/user/:userId', ensureLoggedIn('/'), (req, res) => {
   const { userId } = req.user._id;
   Group.findOneAndUpdate({ people: userId }, { $pull: { people: userId } })
     .then(() => {
