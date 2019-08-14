@@ -4,7 +4,6 @@
       <h1 class="text-wrap black-text"><b>{{group.name}}</b> <!-- add group name -->
       </h1>
       <p class="text-wrap black-text member-name">
-        {{!-- Roommates: username 1, username 2, username 3 --}}
           <p>Roommates: 
         {{#each group.people}}
           {{name}} | 
@@ -21,9 +20,7 @@
     <div class="col-lg-12 col-sm-12 my-auto">
       <h3 class="text-wrap black-text"><b>Tasks</b> <!-- ADD TASK MODAL BUTTON -->
       <button class="btn" data-toggle="modal" data-target="#add-task-modal">
-        {{!-- <a href="/add-task"> --}}
         <img src="images/plus-icon.png" class="icons plus-icon" alt="nope">
-        {{!-- </a> --}}
       </button>
       </h3>
     </div>
@@ -82,7 +79,6 @@
                                 <input type="date" name="date" class="form-control" placeholder="{{date}}" value="{{date}}">
                               </div>
                               <div id="who-id" class="form-group">
-                                {{!-- {{../../users.[0]}} --}}
                                 <label>Who is this for? </label>
                                 <select class="form-control" name="paidBy">
                                   {{#each ../../users}}
@@ -279,7 +275,6 @@
               </div>
             </div>
           </div>
-          {{!-- <input type="email" value={{loggedUser.username}} hidden name="people"> --}}
           {{#each group.people}}
           <div class="form-group">
             <div class="input-group mb-3">
@@ -374,7 +369,6 @@
             <label>
               <input type="checkbox" name="paidBy" class="if-checked" value="{{_id}}"> 
               {{name}}
-              {{!-- <input hidden disabled type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true"> --}}
             </label>
             {{/each }}
             <div class="form-group">
@@ -390,7 +384,6 @@
             <label>
               <input type="checkbox" name="whoOwes" class="if-checked" value="{{_id}}"> 
               {{name}}
-              {{!-- <input hidden disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" placeholder="Amount owed" required="true" value="<!-- insert total value after divided -->"> --}}
             </label>
             {{/each }}
           </div>
@@ -400,85 +393,3 @@
     </div>
   </div>
 </div>
-
-
-
-
-<!--Pay Expense Modal -->
-{{!-- <div class="modal fade" id="edit-expense-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-light border-0">
-        <h5 class="modal-title black-text" id="exampleModalLabel">Pay expense</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="/edit/expense" method="POST"> <!--FILL IN ADD EXPENSE POST ROUTE-->
-          <div class="form-group">
-            <input disabled type="text" name="name" class="form-control" value="">
-          </div>
-          <div class="form-group">
-            <input disabled type="text" name="value" class="form-control" value="total value">
-          </div>
-          <div class="form-group">
-            <input disabled type="date" name="date" class="form-control" value="date">
-          </div>
-          <div class="form-group"> <!-- PAID BY -->
-            <label><b>Paid by: </b></label><br>
-              <input disabled type="Text" name="amountPaid" class="form-control amount-paid mb-2" value="{{name}}">
-            <br><label><b>Owed by: </b></label><br>
-            {{!-- {{ #each user }} --}}
-            {{!-- <label> 
-              Rogerio <!-- name -->
-              <input disabled type="number" name="amountOwed" class="form-control amount-paid mb-2" value="<!-- insert total value after divided -->">
-            </label>
-            <br>
-            {{!-- {{ /each }} --}}
-          {{!-- </div>
-          <button type="submit" class="btn btn-success">Edit</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-{{!-- Emmet abreviation div.box>h3+p*3{ola mundo} --}}
-
-
-
-{{!-- <h1>Dashboard</h1>
-<p>Email: {{user.username}}</p>
-<br><br><br><br>
-<form action="/create/group" method="post">
-  <label for="name">Name:</label>
-  <input type="text" name="name" id="group-name" placeholder="Insert group name">
-  <label for="name">People:</label>
-  <input type="text" name="people" id="group-name" placeholder="Insert email to send invite to">
-  <input type="text" name="creator" id="group-name" value="{{user.username}}" hidden="true">
-  <input type="submit" value="Submit">
-</form>
-<br><br><br><br>
-<form action="/create/task" method="post">
-  <label for="name">Name:</label>
-  <input type="text" name="name" id="task-name" placeholder="Insert task name">
-  <label for="name">Date:</label>
-  <input type="date" name="date" id="task-date">
-  <label for="value">Cost:</label>
-  <input type="number" name="value" id="task-value" placeholder="$0">
-
-  <input type="text" name="paidBy" id="task-name" placeholder="Created by" value="{{user.name}}">
-  <input type="submit" value="Submit">
-</form>
-
-{{!-- 
-name: String,
-date: [Schema.Types.Date],
-people: [Schema.Types.ObjectId],
-value: { type: Number, default: 0 },
-paidBy: { type: [Schema.Types.ObjectId], default: [null] },
-whoOwes: { type: [Schema.Types.ObjectId], default: [null] }, 
---}}

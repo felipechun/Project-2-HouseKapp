@@ -159,9 +159,6 @@ router.post('/signup/:groupId', ensureLoggedOut(), uploadCloud.single('avatar'),
   });
 });
 
-// router.get('/login', ensureLoggedOut(), (req, res) => {
-//   res.render('auth/login');
-// });
 
 router.post('/login', passport.authenticate('local', {
   successReturnToOrRedirect: '/dashboard',

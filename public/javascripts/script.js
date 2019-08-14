@@ -19,8 +19,6 @@ inviteButton.onclick = () => {
 
   uninviteButton.forEach((element, index, array) => {
     element.onclick = (e) => {
-      // console.log('index', index);
-      // console.log('AQUI', theDiv[index]);
       theDiv[index].remove();
     };
   });
@@ -57,18 +55,6 @@ function addValueInput() {
 
 // --------------------------CHECK BOX AMOUNT PAID------------------------------- //
 
-// function checkPaidBy() {
-//   const checkboxes = document.querySelectorAll('.if-checked');
-//   const amountInput = document.querySelectorAll('.amount-paid');
-//   console.log(checkboxes, 'this is checkboxes');
-//   checkboxes.forEach((checkbox, index, array) => {
-//     if (checkbox.checked) {
-//       checkbox.insertAdjacentHTML('afterend', `
-//       <input type="number" name="amountPaid" class="form-control amount-paid mb-2" placeholder="Amount paid" required="true">
-//       `);
-//     }
-//   });
-// }
 
 const checkboxes = document.querySelectorAll('.if-checked');
 const amountPaid = document.querySelectorAll('.amount-paid');
